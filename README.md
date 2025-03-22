@@ -1,12 +1,59 @@
-# React + Vite
+# JV SHOP
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern e-commerce demo built with React and Node.js.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Frontend**: React + Vite, TailwindCSS, CSS Modules
+- **Backend**: Node.js, Express
+- **Database**: Supabase
+- **Features**: AI chatbot (Gemini API)
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Prerequisites
+- Node.js (v16+)
+- npm
+- Supabase account
+- Gemini API key
+
+### Setup
+
+1. Clone the repository
+```bash
+git clone https://github.com/JuanValeraDev/JV-Shop
+cd fake-ecommerce
+```
+
+2. Install dependencies
+```bash
+# Frontend
+cd frontend
+npm install
+
+# Backend
+cd ../backend
+npm install
+```
+
+3. Configure environment variables
+- Create `.env` files in both frontend and backend folders
+- Add Supabase and Gemini API credentials
+
+4. Run the application
+```bash
+# Start backend
+cd backend
+npm run dev
+
+# Start frontend (in another terminal)
+cd frontend
+npm run dev
+```
+
+Visit `http://localhost:5173` to view the application.
+
+## Project Structure
+
+- `frontend/`: React SPA built with Vite
+- `backend/`: Express API server connected to Supabase
