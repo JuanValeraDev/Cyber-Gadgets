@@ -22,7 +22,7 @@ A modern e-commerce demo built with React and Node.js.
 1. Clone the repository
 ```bash
 git clone https://github.com/JuanValeraDev/JV-Shop
-cd fake-ecommerce
+cd jv-shop
 ```
 
 2. Install dependencies
