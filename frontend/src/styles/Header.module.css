@@ -1,0 +1,31 @@
+.header {
+  @apply bg-white shadow-md sticky top-0 z-50;
+}
+
+.nav {
+  @apply container mx-auto px-4 py-4 flex items-center gap-8;
+}
+
+.logo {
+  @apply text-2xl font-bold text-primary  hover:text-primary-dark
+          transition-colors duration-200;
+}
+
+.search {
+  @apply flex-1 max-w-2xl;
+}
+
+.menu {
+  @apply flex items-center gap-4;
+}
+
+.categories {
+  @apply container mx-auto px-4 py-2 flex items-center gap-8 border-t
+          overflow-x-auto;
+}
+
+.category {
+  @apply text-sm font-medium text-gray-600
+         hover:text-primary  transition-colors
+         duration-200 whitespace-nowrap;
+}
