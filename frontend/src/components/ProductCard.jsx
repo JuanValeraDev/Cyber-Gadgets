@@ -5,7 +5,7 @@ export default function ProductCard({ product }) {
   const { addToCart } = useCart();
 
   return (
-    <div className={`${styles.card} dark:bg-zinc-900 dark:hover:bg-zinc-800`}>
+    <div className={`${styles.card} dark:bg-zinc-900 dark:hover:bg-zinc-800 group relative`}>
       <div className={`${styles.imageContainer} dark:bg-gray-700`}>
         <img
           src={product.image}
@@ -31,7 +31,7 @@ export default function ProductCard({ product }) {
           </div>
           <button
             onClick={() => addToCart(product)}
-            className={`${styles.addToCart}  dark:bg-primary-dark dark:hover:bg-terciary-dark `}
+            className={`${styles.addToCart}  dark:bg-primary-dark dark:hover:bg-terciary-dark group-hover:opacity-100 transition-opacity duration-300`}
           >
             Add to Cart
           </button>
