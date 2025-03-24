@@ -1,6 +1,6 @@
 .card {
-  @apply bg-white  rounded-lg shadow-md overflow-hidden
-         hover:shadow-lg transition-shadow duration-200 flex flex-col hover:bg-gray-50
+  @apply bg-gray-100  rounded-lg overflow-hidden
+         flex flex-col hover:bg-white
   p-2;
 }
 

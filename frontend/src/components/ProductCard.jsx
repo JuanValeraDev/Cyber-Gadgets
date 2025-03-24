@@ -5,7 +5,7 @@ export default function ProductCard({ product }) {
   const { addToCart } = useCart();
 
   return (
-    <div className={`${styles.card} dark:bg-zinc-700 dark:hover:bg-zinc-800`}>
+    <div className={`${styles.card} dark:bg-zinc-900 dark:hover:bg-zinc-800`}>
       <div className={`${styles.imageContainer} dark:bg-gray-700`}>
         <img
           src={product.image}

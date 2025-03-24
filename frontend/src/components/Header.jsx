@@ -111,7 +111,7 @@ export default function Header() {
                             aria-label="Toggle theme"
                         >
                             {isDarkMode ? (
-                                <SunIcon className="h-6 w-6 text-yellow-400"/>
+                                <SunIcon className="h-6 w-6 text-gray-300"/>
                             ) : (
                                 <MoonIcon className="h-6 w-6 text-gray-600"/>
                             )}
@@ -156,7 +156,7 @@ export default function Header() {
                         >
                             {isDarkMode ? (
                                 <>
-                                    <SunIcon className="h-6 w-6 text-yellow-400"/>
+                                    <SunIcon className="h-6 w-6 text-gray-300"/>
                                     <span className="text-gray-700 dark:text-gray-200">Light Mode</span>
                                 </>
                             ) : (
