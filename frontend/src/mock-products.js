@@ -17,7 +17,7 @@ export const catalog = {
             category: 'Neural Enhancement',
             price: 449.99,
             description: 'Learn skills through direct cortical uploads (3 languages included). Warning: May cause temporary déjà vu',
-            image:"../../public/images/SynapseLink.png",
+            image:"/images/SynapseLink.png",
             stock: 87,
             isNew: true
         },
@@ -27,7 +27,7 @@ export const catalog = {
             category: 'Quantum Computing Accessories',
             price: 2999.99,
             description: 'Solve real-world optimization problems while charging. Includes 1 qubit processor and anti-decoherence case',
-            image:"../../public/images/PocketQuantum.png",
+            image:"/images/PocketQuantum.png",
             stock: 134,
             isNew: false
         },
@@ -37,7 +37,7 @@ export const catalog = {
             category: 'Holographic Interfaces',
             price: 899.50,
             description: '4D meeting space with haptic feedback. Compatible with all major metaverse platforms',
-            image:"../../public/images/HoloWork.png",
+            image:"/images/HoloWork.png",
             stock: 97,
             isNew: true
         },
@@ -47,7 +47,7 @@ export const catalog = {
             category: 'AI Companions',
             price: 149.99,
             description: 'Self-evolving digital twin that manages your digital life. Now with 40% more emotional intelligence',
-            image:"../../public/images/EgoSphere.png",
+            image:"/images/EgoSphere.png",
             stock: 99,
             isNew: false
         },
@@ -57,7 +57,7 @@ export const catalog = {
             category: 'Space Exploration Gear',
             price: 25999.00,
             description: 'Mars-rated habitat with integrated oxygen farm and radiation shielding. Folds to backpack size',
-            image:"../../public/images/AtmoDome.png",
+            image:"/images/AtmoDome.png",
             stock: 57,
             isNew: false
         },
@@ -67,7 +67,7 @@ export const catalog = {
             category: 'Eco-Tech Solutions',
             price: 799.00,
             description: 'Swarm-enabled particulate eliminator with carbon capture credits marketplace integration',
-            image:"../../public/images/NanoClean.png",
+            image:"/images/NanoClean.png",
             stock: 42,
             isNew: false
         },
@@ -78,7 +78,7 @@ export const catalog = {
             category: 'AI Companions',
             price: 249.95,
             description: 'Floating smart assistant with emotional resonance modulation. Changes color based on conversation tone',
-            image:"../../public/images/NebulaOrb.png",
+            image:"/images/NebulaOrb.png",
             stock: 62,
             isNew: true
         },
@@ -88,7 +88,7 @@ export const catalog = {
             category: 'Holographic Interfaces',
             price: 1799.00,
             description: 'AR cooking instructor that scans ingredients and projects guided meal preparation in 3D space',
-            image:"../../public/images/HoloChef.png",
+            image:"/images/HoloChef.png",
             stock: 54,
             isNew: false
         },
@@ -98,7 +98,7 @@ export const catalog = {
             category: 'Quantum Computing Accessories',
             price: 599.00,
             description: 'Multi-dimensional internet access point with parallel reality browsing capabilities',
-            image:"../../public/images/QuantumRouter.png",
+            image:"/images/QuantumRouter.png",
             stock: 112,
             isNew: false
         },
@@ -108,7 +108,7 @@ export const catalog = {
             category: 'Neural Enhancement',
             price: 799.00,
             description: 'Smart lenses with direct neural overlay displaying real-time data streams and augmented reality',
-            image:"../../public/images/CerebralHUD.png",
+            image:"/images/CerebralHUD.png",
             stock: 221,
             isNew: false
         },
@@ -118,7 +118,7 @@ export const catalog = {
             category: 'Space Exploration Gear',
             price: 12999.00,
             description: 'Smart gloves with micro-thruster control and self-sealing puncture repair for orbital maintenance',
-            image:"../../public/images/ExoGlove.png",
+            image:"/images/ExoGlove.png",
             stock: 23,
             isNew: false
         },
@@ -128,7 +128,7 @@ export const catalog = {
             category: 'Eco-Tech Solutions',
             price: 4599.00,
             description: 'Home-sized matter recombinator that transforms trash into raw building materials using controlled plasma arcs',
-            image:"../../public/images/PlasmaWaste.png",
+            image:"/images/PlasmaWaste.png",
             stock: 99,
             isNew: false
         }

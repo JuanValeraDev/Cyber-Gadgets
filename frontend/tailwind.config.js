@@ -8,14 +8,19 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#3B82F6',
-          light: '#60A5FA',
-          dark: '#2563EB',
+          DEFAULT: '#0f315c',
+          light: '#0f315c',
+          dark: '#FF6500',
         },
         secondary: {
-          DEFAULT: '#10B981',
-          light: '#34D399',
-          dark: '#059669',
+          DEFAULT: '#466588',
+          light: '#466588',
+          dark: '#00d2ff',
+        },
+        terciary:{
+          DEFAULT: '#3e001d',
+          light: '#3e001d',
+          dark: '#aa4402',
         }
       },
       animation: {

@@ -5,7 +5,7 @@ export default function ProductCard({ product }) {
   const { addToCart } = useCart();
 
   return (
-    <div className={`${styles.card} dark:bg-zinc-700`}>
+    <div className={`${styles.card} dark:bg-zinc-700 dark:hover:bg-zinc-800`}>
       <div className={`${styles.imageContainer} dark:bg-gray-700`}>
         <img
           src={product.image}
@@ -13,7 +13,7 @@ export default function ProductCard({ product }) {
           className={styles.image}
         />
         {product.isNew && (
-          <span className={styles.newBadge}>New</span>
+          <span className={`${styles.newBadge} dark:bg-primary-dark`}>New</span>
         )}
       </div>
       <div className={styles.content}>
@@ -31,7 +31,7 @@ export default function ProductCard({ product }) {
           </div>
           <button
             onClick={() => addToCart(product)}
-            className={`${styles.addToCart} dark:bg-zinc-600`}
+            className={`${styles.addToCart}  dark:bg-primary-dark dark:hover:bg-terciary-dark `}
           >
             Add to Cart
           </button>
