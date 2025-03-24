@@ -1,6 +1,7 @@
-# JV SHOP
+# Cyber Gadgets
 
 A modern e-commerce demo built with React and Node.js.
+It offers a catalog of fake futuristic and sci-fi products.
 
 ## Tech Stack
 
@@ -21,8 +22,8 @@ A modern e-commerce demo built with React and Node.js.
 
 1. Clone the repository
 ```bash
-git clone https://github.com/JuanValeraDev/JV-Shop
-cd jv-shop
+git clone https://github.com/JuanValeraDev/Cyber-Gadgets
+cd cyber-gadgets
 ```
 
 2. Install dependencies
