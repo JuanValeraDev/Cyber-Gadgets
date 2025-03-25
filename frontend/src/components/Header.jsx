@@ -13,7 +13,7 @@ import {
 import {useTheme} from '../context/ThemeContext'
 import {useCart} from '../context/CartContext'
 import CartSidebar from './CartSidebar'
-import {catalog} from "../mock-products.js"
+import {categories} from "../mock-products.js"
 
 export default function Header() {
     const {isDarkMode, toggleTheme} = useTheme()
@@ -190,7 +190,7 @@ export default function Header() {
             )}
 
             <div className={`${styles.categories} dark:border-gray-700`}>
-                {catalog.categories.map((category) => (
+                {categories.categories.map((category) => (
                     <div key={category}
                          className={`${styles.category} dark:text-secondary-dark dark:hover:text-primary-dark`}>{category}</div>
                 ))}

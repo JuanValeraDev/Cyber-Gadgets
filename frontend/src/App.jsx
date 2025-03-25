@@ -3,10 +3,8 @@ import {ThemeProvider} from './context/ThemeContext';
 import {CartProvider} from './context/CartContext';
 import Catalog from "./components/Catalog.jsx";
 import Header from './components/Header';
-import {catalog} from "./mock-products.js";
 import Footer from "./components/Footer.jsx";
 
-const products = catalog.products
 
 function App() {
     return (
@@ -15,7 +13,7 @@ function App() {
                 <CartProvider>
                     <div className="min-h-screen bg-gray-100 dark:bg-zinc-900 transition-colors duration-200">
                         <Header/>
-                        <Catalog products={products}/>
+                        <Catalog/>
                         <Footer/>
                     </div>
                 </CartProvider>

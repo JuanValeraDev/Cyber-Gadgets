@@ -1,6 +1,7 @@
 import { useCart } from '../context/CartContext';
 import styles from '../styles/ProductCard.module.css';
 
+
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
 
