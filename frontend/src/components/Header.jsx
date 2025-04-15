@@ -5,7 +5,6 @@ import {
     ShoppingCartIcon,
     MoonIcon,
     SunIcon,
-    MagnifyingGlassIcon,
     UserIcon,
     Bars3Icon,
     XMarkIcon
@@ -18,15 +17,13 @@ import {categories} from "../mock-products.js"
 export default function Header() {
     const {isDarkMode, toggleTheme} = useTheme()
     const {cartItemsCount, isCartOpen, setIsCartOpen} = useCart()
-    const [searchQuery, setSearchQuery] = useState('')
-    const [placeholder, setPlaceholder] = useState('Search products...')
+
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isMobile, setIsMobile] = useState(false)
 
     useEffect(() => {
         const handleResize = () => {
             const mobile = window.innerWidth < 768
-            setPlaceholder(mobile ? 'Search...' : 'Search products...')
             setIsMobile(mobile)
 
             // Close mobile menu when resizing larger than mobile breakpoint
@@ -41,44 +38,19 @@ export default function Header() {
         return () => window.removeEventListener('resize', handleResize)
     }, [isMobileMenuOpen])
 
-    const handleSearch = (e) => {
-        e.preventDefault()
-        // Implement search functionality
-        console.log('Search query:', searchQuery)
-    };
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen)
     }
 
     return (
-        <header className={`${styles.header} dark:bg-zinc-800`}>
+        <header className={`${styles.header} dark:bg-black`}>
             <nav className={styles.nav}>
                 <Link to="/" className={`${styles.logo} dark:text-primary-dark dark:hover:text-terciary-dark`}>
                     Cyber Gadgets
                 </Link>
 
-                <div className={styles.search}>
-                    <form onSubmit={handleSearch} className="relative w-full max-w-xl">
-                        <input
-                            type="text"
-                            placeholder={placeholder}
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full px-4 py-2 pl-10 pr-12 rounded-lg bg-gray-100 dark:bg-gray-700
-                         text-gray-900 dark:text-white focus:outline-none focus:ring-2
-                         focus:ring-primary"
-                        />
-                        <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"/>
-                        <button
-                            type="submit"
-                            className="absolute right-2 top-2 px-2 py-1 text-sm font-medium
-                       text-primary hover:text-primary-dark dark:text-primary-dark dark:hover:text-terciary-dark"
-                        >
-                            Search
-                        </button>
-                    </form>
-                </div>
+
 
                 {isMobile ? (
                     <div className="flex items-center">

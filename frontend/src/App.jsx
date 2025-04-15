@@ -12,10 +12,9 @@ function App() {
         <Router>
             <ThemeProvider>
                 <CartProvider>
-                    <div className="min-h-screen bg-gray-100 dark:bg-zinc-900 transition-colors duration-200">
+                    <div className="min-h-screen bg-gray-100 dark:bg-black transition-colors duration-200">
                         <Header/>
                         <Catalog/>
-
                         <Footer/>
                     </div>
                 </CartProvider>
