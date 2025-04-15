@@ -1,4 +1,5 @@
 import ProductList from "./ProductList.jsx";
+import Chatbot from "./Chatbot.jsx";
 
 export default function Catalog() {
     return (
@@ -21,6 +22,7 @@ export default function Catalog() {
                 </div>
                 <ProductList/>
             </section>
+            <Chatbot/>
         </main>
     );
 }

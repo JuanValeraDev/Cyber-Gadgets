@@ -4,6 +4,7 @@ import {CartProvider} from './context/CartContext';
 import Catalog from "./components/Catalog.jsx";
 import Header from './components/Header';
 import Footer from "./components/Footer.jsx";
+import Chatbot from "./components/Chatbot.jsx";
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
                     <div className="min-h-screen bg-gray-100 dark:bg-zinc-900 transition-colors duration-200">
                         <Header/>
                         <Catalog/>
+
                         <Footer/>
                     </div>
                 </CartProvider>
