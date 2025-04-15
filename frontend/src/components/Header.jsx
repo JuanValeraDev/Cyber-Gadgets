@@ -14,19 +14,20 @@ import {useCart} from '../context/CartContext'
 import CartSidebar from './CartSidebar'
 import {categories} from "../mock-products.js"
 
-export default function Header() {
+export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery}) {
     const {isDarkMode, toggleTheme} = useTheme()
     const {cartItemsCount, isCartOpen, setIsCartOpen} = useCart()
 
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isMobile, setIsMobile] = useState(false)
 
+
     useEffect(() => {
         const handleResize = () => {
             const mobile = window.innerWidth < 768
             setIsMobile(mobile)
 
-            // Close mobile menu when resizing larger than mobile breakpoint
+
             if (!mobile && isMobileMenuOpen) {
                 setIsMobileMenuOpen(false)
             }
@@ -43,13 +44,20 @@ export default function Header() {
         setIsMobileMenuOpen(!isMobileMenuOpen)
     }
 
+
     return (
         <header className={`${styles.header} dark:bg-black`}>
             <nav className={styles.nav}>
-                <Link to="/" className={`${styles.logo} dark:text-primary-dark dark:hover:text-terciary-dark`}>
+                <button onClick={() => {
+                    setIsCartOpen(false)
+                    onCategoryChange("All")
+                    setIsMobileMenuOpen(false)
+                    onOpenChatbot(false)
+                    onSearchQuery("")
+                }
+                } className={`${styles.logo} dark:text-primary-dark dark:hover:text-terciary-dark`}>
                     Cyber Gadgets
-                </Link>
-
+                </button>
 
 
                 {isMobile ? (
@@ -162,9 +170,17 @@ export default function Header() {
             )}
 
             <div className={`${styles.categories} dark:border-gray-700`}>
+                <button key={"All"} onClick={() => {
+                    onCategoryChange("All")
+                }}
+                        className={`${styles.category} dark:text-secondary-dark dark:hover:text-primary-dark bg-gray-100 dark:bg-zinc-800 px-4 rounded-md`}>All
+                </button>
+
                 {categories.categories.map((category) => (
-                    <div key={category}
-                         className={`${styles.category} dark:text-secondary-dark dark:hover:text-primary-dark`}>{category}</div>
+                    <button key={category} onClick={() => {
+                        onCategoryChange(category)
+                    }}
+                            className={`${styles.category} dark:text-secondary-dark dark:hover:text-primary-dark`}>{category}</button>
                 ))}
             </div>
 

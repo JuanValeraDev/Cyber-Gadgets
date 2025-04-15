@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 
-export default function Chatbot() {
-    const [isOpen, setIsOpen] = useState(false);
+export default function Chatbot({onOpenChatbot, isOpen}) {
+
     const [messages, setMessages] = useState([
         { id: 1, text: "Hello! How can I help you today?", sender: "bot" }
     ]);
@@ -10,13 +10,13 @@ export default function Chatbot() {
     const [isRendered, setIsRendered] = useState(false);
     const chatEndRef = useRef(null);
 
-    // Check if viewport is mobile size and update state
+
     useEffect(() => {
         const checkIfMobile = () => {
             setIsMobile(window.innerWidth < 768);
         };
 
-        // Initial check
+
         checkIfMobile();
 
         // Add event listener
@@ -72,7 +72,7 @@ export default function Chatbot() {
     };
 
     const toggleChat = () => {
-        setIsOpen(!isOpen);
+        onOpenChatbot(!isOpen);
     };
 
     return (
