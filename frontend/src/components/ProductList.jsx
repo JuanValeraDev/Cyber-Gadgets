@@ -7,14 +7,16 @@ export default function ProductList() {
 
     useEffect(() => {
         async function fetchProducts() {
-            let response = await fetch(`${URL}/products`);
-           console.log(response)
-            response = JSON.stringify(response)
-            setProducts(response.products);
+            try {
+                const response = await fetch(`${URL}/products`)
+                const data = await response.json()
+                setProducts(data)
+            } catch (error) {
+                console.error("Error fetching products:", error)
+            }
         }
 
         fetchProducts();
-
     }, []);
 
     return (
