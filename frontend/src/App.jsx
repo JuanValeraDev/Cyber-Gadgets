@@ -4,9 +4,12 @@ import {CartProvider} from './context/CartContext';
 import Catalog from "./components/Catalog.jsx";
 import Header from './components/Header';
 import Footer from "./components/Footer.jsx";
-import Chatbot from "./components/Chatbot.jsx";
 
 
+/*TODO
+    1. The min-h of the catalog should be 90%vh
+    2. Poner lupa en la search bar en desktop
+ */
 function App() {
     return (
         <Router>

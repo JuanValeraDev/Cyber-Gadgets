@@ -1,12 +1,29 @@
 import ProductList from "./ProductList.jsx";
 import Chatbot from "./Chatbot.jsx";
-
-import {MagnifyingGlassIcon} from "@heroicons/react/24/outline/index.js";
 import {useEffect, useState} from "react";
+import debounce from 'lodash.debounce';
+import {MagnifyingGlassIcon} from "@heroicons/react/24/outline/index.js";
 
 export default function Catalog() {
     const [searchQuery, setSearchQuery] = useState('')
     const [isMobile, setIsMobile] = useState(false)
+    const [products, setProducts] = useState([]);
+    const URL = "http://localhost:5000"
+
+    useEffect(() => {
+        async function fetchProducts() {
+            try {
+                const response = await fetch(`${URL}/products`)
+                const data = await response.json()
+                setProducts(data)
+            } catch (error) {
+                console.error("Error fetching products:", error)
+            }
+        }
+
+        fetchProducts();
+    }, []);
+
 
     useEffect(() => {
         const handleResize = () => {
@@ -19,15 +36,17 @@ export default function Catalog() {
 
         return () => window.removeEventListener('resize', handleResize)
     }, [])
+    const handleSearch = debounce((value) => {
+        setSearchQuery(value);
+    }, 300);
 
-    const handleSearch = (e) => {
-        e.preventDefault()
+    const filteredProducts = products.filter((product) =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
-        console.log('Search query:', searchQuery)
-    };
 
     return (
-        <main className="container mx-auto px-4 py-8 dark:bg-zinc-900 rounded-lg">
+        <main className="container mx-auto px-4 py-8 dark:bg-zinc-900 rounded-lg min-h-full">
             <section className="mb-12">
                 {isMobile ? (
                     <div className="flex  flex-col gap-8  mb-8 items-center">
@@ -35,24 +54,37 @@ export default function Catalog() {
                             Explore our universe
                         </h1>
                         <div className="w-full ps-8 pe-8">
-                            <form onSubmit={handleSearch} className="relative  ">
+                            <div className="relative">
+                                <MagnifyingGlassIcon
+                                    className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500"/>
+
                                 <input
                                     type="text"
                                     placeholder="Search products..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full px-4 py-2 pl-2 pr-20 rounded-lg bg-white dark:bg-zinc-950
+                                    className="w-full px-4 py-2 pl-8 pr-20 rounded-lg bg-white dark:bg-zinc-950
                          text-gray-900 dark:text-white focus:outline-none focus:ring-2
                          focus:ring-primary"
                                 />
-                                <button
-                                    type="submit"
-                                    className="absolute right-2 top-2 px-2 py-1 text-sm font-medium
+                                <button onClick={() => setSearchQuery("")}
+                                        className="absolute right-2 top-2 px-2 py-1 text-sm font-medium
                        text-primary hover:text-secondary dark:text-primary-dark dark:hover:text-terciary-dark"
                                 >
-                                    Search
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-5 w-5"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                            clipRule="evenodd"
+                                        />
+                                    </svg>
                                 </button>
-                            </form>
+                            </div>
                         </div>
 
                     </div>
@@ -62,7 +94,8 @@ export default function Catalog() {
                             Explore our universe
                         </h1>
                         <div className="w-[50%]">
-                            <form onSubmit={handleSearch} className="relative  ">
+                            <div onSubmit={handleSearch} className="relative  ">
+
                                 <input
                                     type="text"
                                     placeholder="Search products..."
@@ -72,20 +105,30 @@ export default function Catalog() {
                          text-gray-900 dark:text-white focus:outline-none focus:ring-2
                          focus:ring-primary"
                                 />
-                                <button
-                                    type="submit"
-                                    className="absolute right-2 top-2 px-2 py-1 text-sm font-medium
+                                <button onClick={() => setSearchQuery("")}
+                                        className="absolute right-2 top-2 px-2 py-1 text-sm font-medium
                        text-primary hover:text-secondary dark:text-primary-dark dark:hover:text-terciary-dark"
                                 >
-                                    Search
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-5 w-5"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                            clipRule="evenodd"
+                                        />
+                                    </svg>
                                 </button>
-                            </form>
+                            </div>
                         </div>
 
                     </div>
                 )
                 }
-                <ProductList/>
+                <ProductList products={filteredProducts}/>
             </section>
             <Chatbot/>
         </main>
