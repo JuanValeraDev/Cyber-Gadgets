@@ -1,14 +1,28 @@
-import { useState, useRef, useEffect } from 'react';
+import {useState, useRef, useEffect} from 'react';
+
 
 export default function Chatbot({onOpenChatbot, isOpen}) {
 
     const [messages, setMessages] = useState([
-        { id: 1, text: "Hello! How can I help you today?", sender: "bot" }
+        {id: 1, text: "Hello! How can I help you today?", sender: "bot"}
     ]);
     const [inputValue, setInputValue] = useState("");
     const [isMobile, setIsMobile] = useState(false);
     const [isRendered, setIsRendered] = useState(false);
     const chatEndRef = useRef(null);
+
+    const URL = "http://localhost:5000"
+
+
+    async function fetchResponse() {
+        try {
+            const response = await fetch(`${URL}/response?inputValue=${inputValue}&messagesLength=${messages.length}`)
+            const data = await response.json()
+            setMessages([...messages, data])
+        } catch (error) {
+            console.error("Error fetching the response:", error)
+        }
+    }
 
 
     useEffect(() => {
@@ -28,7 +42,7 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
 
     // Auto-scroll to bottom when messages change
     useEffect(() => {
-        chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        chatEndRef.current?.scrollIntoView({behavior: "smooth"});
     }, [messages]);
 
     // Handle animation timing when opening/closing
@@ -58,7 +72,9 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
         };
 
         setMessages([...messages, userMessage]);
+        fetchResponse(userMessage.text)
         setInputValue("");
+        {/*
 
         // Here you would integrate with your AI service
         setTimeout(() => {
@@ -69,6 +85,8 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
             };
             setMessages(prevMessages => [...prevMessages, botMessage]);
         }, 1000);
+        */
+        }
     };
 
     const toggleChat = () => {

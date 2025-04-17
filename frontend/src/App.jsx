@@ -9,8 +9,7 @@ import {useState} from "react";
 
 /*TODO
     1. The min-h of the catalog should be 90%vh
-    2. Poner lupa en la search bar en desktop
-    3. Decidir qué hacer cuando se le da al logo: si llevarme los estados del chat y el buscador a App.jsx o si buscar la forma de que al navegar a "/" se reseteen los estados.
+    3. Cambiar el logo a un diseño más personalizado
  */
 function App() {
     const [selectedCategory, setSelectedCategory] = useState("All");
