@@ -1,4 +1,6 @@
 import {useState, useRef, useEffect} from 'react';
+import { v4 as uuidv4 } from 'uuid';
+
 
 
 export default function Chatbot({onOpenChatbot, isOpen}) {
@@ -13,10 +15,22 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
 
     const URL = "http://localhost:5000"
 
+    const [sessionId] = useState(() => {
+        // Check if a session ID already exists in localStorage
+        const existingSessionId = localStorage.getItem('chatSessionId');
+        if (existingSessionId) {
+            return existingSessionId;
+        }
+        // Create new session ID if none exists
+        const newSessionId = uuidv4();
+        localStorage.setItem('chatSessionId', newSessionId);
+        return newSessionId;
+    });
+
 
     async function fetchResponse() {
         try {
-            const response = await fetch(`${URL}/response?inputValue=${inputValue}&messagesLength=${messages.length}`)
+            const response = await fetch(`${URL}/response?inputValue=${inputValue}&messagesLength=${messages.length}&sessionId=${sessionId}`)
             const data = await response.json()
             setMessages(prevMessages => [...prevMessages, data])
         } catch (error) {

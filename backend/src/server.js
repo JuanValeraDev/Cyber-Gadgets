@@ -26,24 +26,52 @@ app.get('/products', (req, res) => {
         res.status(500).json({error: error.message});
     }
 });
+// Create a simple in-memory store for conversations (in production, you'd use a database)
+const conversations = {};
 
 app.get('/response', async (req, res) => {
-
     const inputValue = req.query.inputValue;
-    const messagesLength = req.query.messagesLength
+    const messagesLength = req.query.messagesLength;
+    const sessionId = req.query.sessionId || 'default'; // You'll need to send a session ID from frontend
+
+    // Initialize conversation history if it doesn't exist
+    if (!conversations[sessionId]) {
+        conversations[sessionId] = [];
+    }
+
+ // Define your e-commerce context/system prompt
+ const ecommerceContext = `It is very important that you don't invent anything. If you don't know something just say so.
+ You can talk in English and in Spanish, always answer in the same language you were question.
+ You are a helpful assistant for our e-commerce store "Cyber Gadgets". 
+ Our store specializes in futuristic technological gadgets.
+ Always be polite, helpful, and only answer questions related to our store and products.
+ These are the products that we are offering right now: ${JSON.stringify(catalog.products, null, 2)}
+ If asked about anything unrelated to our store, politely redirect the conversation to how you can help with shopping needs.
+ Please don't hallucinate, think step by step.`;
+ console.log(catalog.products);
+    // Add user's new message to conversation history
+    conversations[sessionId].push({ role: "user", text: inputValue });
+
+    // Create messages array with context and conversation history
+    const messages = [
+        { role: "system", text: ecommerceContext },
+        ...conversations[sessionId].slice(-10) // Include up to last 10 messages to stay within context limits
+    ];
 
     const response = await ai.models.generateContent({
         model: "gemini-2.0-flash",
-        contents: inputValue,
+        contents: messages,
     });
+
+    // Add bot's response to conversation history
+    conversations[sessionId].push({ role: "model", text: response.text });
 
     res.status(200).json({
         id: messagesLength + 2,
         text: response.text,
         sender: "bot"
     });
-
-})
+});
 
 
 app.listen(PORT, () => {
