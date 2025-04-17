@@ -18,7 +18,7 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
         try {
             const response = await fetch(`${URL}/response?inputValue=${inputValue}&messagesLength=${messages.length}`)
             const data = await response.json()
-            setMessages([...messages, data])
+            setMessages(prevMessages => [...prevMessages, data])
         } catch (error) {
             console.error("Error fetching the response:", error)
         }
@@ -124,7 +124,7 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
                     className={`fixed z-50 transition-all duration-700 ease-out rounded-lg ${
                         isMobile
                             ? " bg-white dark:bg-zinc-800 border dark:border-zinc-700 h-[80%] bottom-2 left-2 right-2"
-                            : "bottom-6 right-4 bg-white dark:bg-zinc-800 border dark:border-zinc-700  w-80 h-96 origin-bottom-right"
+                            : "bottom-6 right-4 bg-white dark:bg-zinc-800 border dark:border-zinc-700  w-96 h-96 origin-bottom-right"
                     } ${
                         isOpen
                             ? isMobile

@@ -17,15 +17,6 @@ app.use(express.json());
 
 const ai = new GoogleGenAI({apiKey: process.env.API_KEY});
 
-async function main() {
-    const response = await ai.models.generateContent({
-        model: "gemini-2.0-flash",
-        contents: "Explain how AI works",
-    });
-    console.log(response.text);
-}
-
-await main();
 
 // Routes
 app.get('/products', (req, res) => {
@@ -36,16 +27,19 @@ app.get('/products', (req, res) => {
     }
 });
 
-app.get('/response', (req, res) => {
+app.get('/response', async (req, res) => {
 
     const inputValue = req.query.inputValue;
     const messagesLength = req.query.messagesLength
-    console.log("inputValue " +inputValue);
-    console.log("messagesLength " +messagesLength);
+
+    const response = await ai.models.generateContent({
+        model: "gemini-2.0-flash",
+        contents: inputValue,
+    });
 
     res.status(200).json({
-        id: messagesLength + 1,
-        text: "inputValue: " + inputValue,
+        id: messagesLength + 2,
+        text: response.text,
         sender: "bot"
     });
 
