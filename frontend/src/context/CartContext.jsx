@@ -1,10 +1,19 @@
-import {createContext, useContext, useState} from 'react';
+import {createContext, useContext, useState, useEffect} from 'react';
 
 const CartContext = createContext('cart');
 
 export function CartProvider({children}) {
-    const [cart, setCart] = useState([]);
+    // Initialize cart state from sessionStorage if available
+    const [cart, setCart] = useState(() => {
+        const savedCart = sessionStorage.getItem('cart');
+        return savedCart ? JSON.parse(savedCart) : [];
+    });
     const [isCartOpen, setIsCartOpen] = useState(false);
+
+    // Save cart to sessionStorage whenever it changes
+    useEffect(() => {
+        sessionStorage.setItem('cart', JSON.stringify(cart));
+    }, [cart]);
 
     const addToCart = (product) => {
         setCart(currentCart => {
