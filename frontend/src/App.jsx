@@ -11,6 +11,7 @@ import {useState} from "react";
     1. The min-h of the catalog should be 90%vh
     2. Shuffle randomly the products
     3. Put an skeleton while the products are loading
+    4. Change the catalog.products for feeding the chatbot for a collection of products retrieved by the database
  */
 function App() {
     const [selectedCategory, setSelectedCategory] = useState("All");
