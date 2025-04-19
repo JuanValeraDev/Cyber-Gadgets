@@ -1,6 +1,5 @@
 import {useState, useRef, useEffect} from 'react';
-import { v4 as uuidv4 } from 'uuid';
-
+import {v4 as uuidv4} from 'uuid';
 
 
 export default function Chatbot({onOpenChatbot, isOpen}) {
@@ -31,9 +30,13 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
 
     async function fetchResponse() {
         try {
+            console.log("En try, antes de lo demás, api_url: " + API_URL + "\n inputValue: " + inputValue + "\n messagesLength: " + messages.length + "\n sessionId: " + sessionId)
             const response = await fetch(`${API_URL}/response?inputValue=${inputValue}&messagesLength=${messages.length}&sessionId=${sessionId}`)
+            console.log("Después del fetch, response: " + response)
             const data = await response.json()
+            console.log("data: " + data)
             setMessages(prevMessages => [...prevMessages, data])
+            console.log("después de setMessages, messages: " + messages)
         } catch (error) {
             console.error("Error fetching the response:", error)
         }
