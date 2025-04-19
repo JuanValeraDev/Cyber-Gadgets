@@ -4,20 +4,41 @@ import cors from 'cors';
 import {catalog} from './mock-products.js';
 import dotenv from 'dotenv';
 import {GoogleGenAI} from "@google/genai";
+import { createClient } from '@supabase/supabase-js'
+
+// Create a single supabase client for interacting with your database
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
 
 
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
-app.use(express.json());
-
-
 const ai = new GoogleGenAI({apiKey: process.env.API_KEY});
 
 
+app.use(cors());
+app.use(express.json());
+
+dotenv.config();
+
+
+
+// Example endpoint to fetch data
+app.get('/products', async (req, res) => {
+    const { data, error } = await supabase
+        .from('products')
+        .select('*');
+
+    if (error) {
+        return res.status(500).json({ error: error.message });
+    }
+
+    return res.json(data);
+});
+
+
+/*
 // Routes
 app.get('/products', (req, res) => {
     try {
@@ -28,7 +49,7 @@ app.get('/products', (req, res) => {
 });
 // Create a simple in-memory store for conversations (in production, you'd use a database)
 const conversations = {};
-
+*/
 app.get('/response', async (req, res) => {
     const inputValue = req.query.inputValue;
     const messagesLength = req.query.messagesLength;
@@ -48,7 +69,6 @@ app.get('/response', async (req, res) => {
  These are the products that we are offering right now: ${JSON.stringify(catalog.products, null, 2)}
  If asked about anything unrelated to our store, politely redirect the conversation to how you can help with shopping needs.
  Please don't hallucinate, think step by step.`;
- console.log(catalog.products);
     // Add user's new message to conversation history
     conversations[sessionId].push({ role: "user", text: inputValue });
 
