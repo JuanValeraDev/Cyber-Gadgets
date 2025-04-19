@@ -3,12 +3,13 @@ import Chatbot from "./Chatbot.jsx";
 import {useEffect, useState} from "react";
 import debounce from 'lodash.debounce';
 import {MagnifyingGlassIcon} from "@heroicons/react/24/outline/index.js";
-import dotenv from 'dotenv';
+
 
 export default function Catalog({selectedCategory, onOpenChatbot, isOpen, onSearchQuery, searchQuery}) {
 
     const [isMobile, setIsMobile] = useState(false)
     const [products, setProducts] = useState([]);
+    // eslint-disable-next-line no-undef
     const API_URL = process.env.NODE_ENV === 'production' ? 'https://cyber-gadgets.onrender.com' : 'http://localhost:5000';
 
 
