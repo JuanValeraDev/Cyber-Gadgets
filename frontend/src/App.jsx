@@ -6,7 +6,6 @@ import Header from './components/Header';
 import Footer from "./components/Footer.jsx";
 import {useState} from "react";
 /*TODO
-    2. Shuffle randomly the products
     3. Put an skeleton while the products are loading
     4. Change the catalog.products for feeding the chatbot for a collection of products retrieved by the database
     5. Save in the session the color scheme
