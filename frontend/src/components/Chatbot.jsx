@@ -13,7 +13,8 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
     const [isRendered, setIsRendered] = useState(false);
     const chatEndRef = useRef(null);
 
-    const URL = "http://localhost:5000"
+    // eslint-disable-next-line no-undef
+    const API_URL = process.env.NODE_ENV === 'production' ? 'https://cyber-gadgets.onrender.com' : 'http://localhost:5000';
 
     const [sessionId] = useState(() => {
         // Check if a session ID already exists in localStorage
@@ -30,7 +31,7 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
 
     async function fetchResponse() {
         try {
-            const response = await fetch(`${URL}/response?inputValue=${inputValue}&messagesLength=${messages.length}&sessionId=${sessionId}`)
+            const response = await fetch(`${API_URL}/response?inputValue=${inputValue}&messagesLength=${messages.length}&sessionId=${sessionId}`)
             const data = await response.json()
             setMessages(prevMessages => [...prevMessages, data])
         } catch (error) {
@@ -88,19 +89,6 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
         setMessages([...messages, userMessage]);
         fetchResponse(userMessage.text)
         setInputValue("");
-        {/*
-
-        // Here you would integrate with your AI service
-        setTimeout(() => {
-            const botMessage = {
-                id: messages.length + 2,
-                text: "This is where the AI response will appear once you integrate your service.",
-                sender: "bot"
-            };
-            setMessages(prevMessages => [...prevMessages, botMessage]);
-        }, 1000);
-        */
-        }
     };
 
     const toggleChat = () => {
