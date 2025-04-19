@@ -5,14 +5,15 @@ import Catalog from "./components/Catalog.jsx";
 import Header from './components/Header';
 import Footer from "./components/Footer.jsx";
 import {useState} from "react";
-
-
 /*TODO
-    1. The min-h of the catalog should be 90%vh
     2. Shuffle randomly the products
     3. Put an skeleton while the products are loading
     4. Change the catalog.products for feeding the chatbot for a collection of products retrieved by the database
+    5. Save in the session the color scheme
+    6. Fix the UI chatbot in mobile landscape
  */
+
+
 function App() {
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [isOpen, setIsOpen] = useState(false)
@@ -21,10 +22,12 @@ function App() {
         <Router>
             <ThemeProvider>
                 <CartProvider>
-                    <div className="min-h-screen bg-gray-100 dark:bg-black transition-colors duration-200">
+                    <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-black transition-colors duration-200">
                         <Header onCategoryChange={setSelectedCategory} onOpenChatbot={setIsOpen} onSearchQuery={setSearchQuery}/>
-                        <Catalog selectedCategory={selectedCategory} onOpenChatbot={setIsOpen} isOpen={isOpen}
-                                 onSearchQuery={setSearchQuery} searchQuery={searchQuery}/>
+                        <div className="flex-grow">
+                            <Catalog selectedCategory={selectedCategory} onOpenChatbot={setIsOpen} isOpen={isOpen}
+                                     onSearchQuery={setSearchQuery} searchQuery={searchQuery}/>
+                        </div>
                         <Footer/>
                     </div>
                 </CartProvider>
