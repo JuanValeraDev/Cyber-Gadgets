@@ -55,8 +55,8 @@ export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery})
                     onOpenChatbot(false)
                     onSearchQuery("")
                 }
-                } className={`${styles.logo} dark:text-primary-dark dark:hover:text-terciary-dark`}>
-                    Cyber Gadgets
+                } >
+                   <img src="/images/logo-2.png" alt="logo" className="logo w-44"/>
                 </button>
 
 
