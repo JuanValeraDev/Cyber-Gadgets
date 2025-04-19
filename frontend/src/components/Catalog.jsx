@@ -3,17 +3,19 @@ import Chatbot from "./Chatbot.jsx";
 import {useEffect, useState} from "react";
 import debounce from 'lodash.debounce';
 import {MagnifyingGlassIcon} from "@heroicons/react/24/outline/index.js";
+import dotenv from 'dotenv';
 
 export default function Catalog({selectedCategory, onOpenChatbot, isOpen, onSearchQuery, searchQuery}) {
 
     const [isMobile, setIsMobile] = useState(false)
     const [products, setProducts] = useState([]);
-    const URL = "http://localhost:5000"
+    const API_URL = process.env.NODE_ENV === 'production' ? 'https://cyber-gadgets.onrender.com' : 'http://localhost:5000';
+
 
     useEffect(() => {
         async function fetchProducts() {
             try {
-                const response = await fetch(`${URL}/products`)
+                const response = await fetch(`${API_URL}/products`)
                 const data = await response.json()
                 setProducts(data)
             } catch (error) {

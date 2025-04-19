@@ -23,7 +23,6 @@ app.use(express.json());
 dotenv.config();
 
 
-
 // Example endpoint to fetch data
 app.get('/products', async (req, res) => {
     const { data, error } = await supabase

@@ -9,7 +9,6 @@ import {useState} from "react";
 
 /*TODO
     1. The min-h of the catalog should be 90%vh
-    3. Cambiar el logo a un diseño más personalizado
  */
 function App() {
     const [selectedCategory, setSelectedCategory] = useState("All");
