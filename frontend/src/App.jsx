@@ -1,10 +1,11 @@
-import {BrowserRouter as Router} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import {ThemeProvider} from './context/ThemeContext';
 import {CartProvider} from './context/CartContext';
 import Catalog from "./components/Catalog.jsx";
 import Header from './components/Header';
 import Footer from "./components/Footer.jsx";
 import {useState} from "react";
+import AccountPage from "./components/AccountPage.jsx";
 /*TODO
     1. Save the chart in session
     3. Put an skeleton while the products are loading
@@ -17,19 +18,33 @@ import {useState} from "react";
 
 function App() {
     const [selectedCategory, setSelectedCategory] = useState("All");
-    const [isOpen, setIsOpen] = useState(false)
-    const [searchQuery, setSearchQuery] = useState('')
+    const [isOpen, setIsOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+
     return (
         <Router>
             <ThemeProvider>
                 <CartProvider>
                     <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-black transition-colors duration-200">
-                        <Header onCategoryChange={setSelectedCategory} onOpenChatbot={setIsOpen} onSearchQuery={setSearchQuery}/>
+                        <Header onCategoryChange={setSelectedCategory} onOpenChatbot={setIsOpen} onSearchQuery={setSearchQuery} />
                         <div className="flex-grow">
-                            <Catalog selectedCategory={selectedCategory} onOpenChatbot={setIsOpen} isOpen={isOpen}
-                                     onSearchQuery={setSearchQuery} searchQuery={searchQuery}/>
+                            <Routes>
+                                <Route
+                                    path="/"
+                                    element={
+                                        <Catalog
+                                            selectedCategory={selectedCategory}
+                                            onOpenChatbot={setIsOpen}
+                                            isOpen={isOpen}
+                                            onSearchQuery={setSearchQuery}
+                                            searchQuery={searchQuery}
+                                        />
+                                    }
+                                />
+                                <Route path="/account" element={<AccountPage />} />
+                            </Routes>
                         </div>
-                        <Footer/>
+                        <Footer />
                     </div>
                 </CartProvider>
             </ThemeProvider>

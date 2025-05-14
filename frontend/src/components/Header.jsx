@@ -13,6 +13,7 @@ import {useTheme} from '../context/ThemeContext'
 import {useCart} from '../context/CartContext'
 import CartSidebar from './CartSidebar'
 import {categories} from "../mock-products.js"
+import {useNavigate} from 'react-router-dom';
 
 export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery}) {
     const {isDarkMode, toggleTheme} = useTheme()
@@ -44,7 +45,7 @@ export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery})
         setIsMobileMenuOpen(!isMobileMenuOpen)
     }
 
-
+    const navigate = useNavigate();
     return (
         <header className={`${styles.header} dark:bg-black`}>
             <nav className={styles.nav}>
@@ -54,9 +55,10 @@ export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery})
                     setIsMobileMenuOpen(false)
                     onOpenChatbot(false)
                     onSearchQuery("")
+                    navigate("/")
                 }
-                } >
-                   <img src="/images/logo-2.png" alt="logo" className="logo w-44"/>
+                }>
+                    <img src="/images/logo-2.png" alt="logo" className="logo w-44"/>
                 </button>
 
 
