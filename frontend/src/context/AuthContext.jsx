@@ -1,70 +1,53 @@
-// src/context/AuthContext.jsx
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import AuthService from '../services/auth';
+// src/context/AuthContext.jsx (Create this if missing)
+import { createContext, useContext, useEffect, useState } from 'react';
+import { createClient } from '@supabase/supabase-js';
 
-// Create the authentication context
+const supabase = createClient(
+    process.env.REACT_APP_SUPABASE_URL,
+    process.env.REACT_APP_SUPABASE_ANON_KEY
+);
 const AuthContext = createContext();
 
-// Custom hook to use the auth context
-export const useAuth = () => useContext(AuthContext);
-
-// Provider component
-export const AuthProvider = ({ children }) => {
+export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
-    const [token, setToken] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Check for existing session on mount
     useEffect(() => {
-        const initAuth = () => {
-            const storedToken = AuthService.getToken();
-            const storedUser = AuthService.getCurrentUser();
-
-            if (storedToken && storedUser) {
-                setToken(storedToken);
-                setUser(storedUser);
-            }
-
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+            setUser(session?.user ?? null);
             setLoading(false);
-        };
+        });
 
-        initAuth();
+        return () => subscription.unsubscribe();
     }, []);
 
-    // Login function
-    const login = async (email, password) => {
-        const data = await AuthService.login(email, password);
-        setUser(data.user);
-        setToken(data.session.access_token);
-        return data;
-    };
-
-    // Register function
-    const register = async (email, password) => {
-        return await AuthService.signUp(email, password);
-    };
-
-    // Logout function
-    const logout = async () => {
-        await AuthService.logout();
-        setUser(null);
-        setToken(null);
-    };
-
-    // Context value
     const value = {
         user,
-        token,
         loading,
-        isAuthenticated: !!user && !!token,
-        login,
-        register,
-        logout
+        login: async (email, password) => {
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) throw error;
+            return data;
+        },
+        signUp: async (email, password) => {
+            const { data, error } = await supabase.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: {
+                        created_at: new Date().toISOString()
+                    }
+                }
+            });
+            if (error) throw error;
+            return data;
+        },
+        logout: async () => {
+            await supabase.auth.signOut();
+        }
     };
 
-    return (
-        <AuthContext.Provider value={value}>
-            {!loading && children}
-        </AuthContext.Provider>
-    );
-};
+    return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
+}
+
+export const useAuth = () => useContext(AuthContext);

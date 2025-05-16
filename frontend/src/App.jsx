@@ -6,6 +6,7 @@ import Header from './components/Header';
 import Footer from "./components/Footer.jsx";
 import {useState} from "react";
 import AccountPage from "./components/AccountPage.jsx";
+import Login from "./components/Login.jsx";
 /*TODO
     1. Save the chart in session
     3. Put an skeleton while the products are loading
@@ -42,6 +43,7 @@ function App() {
                                     }
                                 />
                                 <Route path="/account" element={<AccountPage />} />
+                                <Route path="/login" element={<Login />} />
                             </Routes>
                         </div>
                         <Footer />
