@@ -100,7 +100,7 @@ export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery})
                         </button>
 
                         <Link
-                            to="/account"
+                            to="/login"
                             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                             aria-label="Account"
                         >
@@ -150,7 +150,7 @@ export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery})
                         </button>
 
                         <Link
-                            to="/account"
+                            to="/login"
                             className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600"
                         >
                             <UserIcon className="h-6 w-6 text-gray-600 dark:text-gray-300"/>

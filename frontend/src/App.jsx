@@ -5,13 +5,10 @@ import Catalog from "./components/Catalog.jsx";
 import Header from './components/Header';
 import Footer from "./components/Footer.jsx";
 import {useState} from "react";
-import AccountPage from "./components/AccountPage.jsx";
 import Login from "./components/Login.jsx";
+import AccountHome from "./components/AccountHome.jsx";
 /*TODO
-    1. Save the chart in session
     3. Put an skeleton while the products are loading
-    4. Change the catalog.products for feeding the chatbot for a collection of products retrieved by the database
-    5. Save in the session the color scheme
     6. Fix the UI chatbot in mobile landscape
 
  */
@@ -42,7 +39,7 @@ function App() {
                                         />
                                     }
                                 />
-                                <Route path="/account" element={<AccountPage />} />
+                                <Route path="/account" element={<AccountHome />} />
                                 <Route path="/login" element={<Login />} />
                             </Routes>
                         </div>

@@ -1,5 +1,5 @@
 // src/components/AccountPage.jsx
-import { useAuth } from '../context/AuthContext';
+//import { useAuth } from '../context/AuthContext';
 import Login from './Login';
 import AccountHome from './AccountHome';
 
