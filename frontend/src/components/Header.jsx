@@ -26,9 +26,11 @@ export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery, 
     // Handle button click
     const handleAccountButtonClick = () => {
         if (session) {
-            navigate("/account"); // Redirect to account page if logged in
+           console.log("session:", JSON.stringify(session, null, 2));
+           console.log("email: "+session.user.email)
+            navigate("/account", { state: { userData: session } });
         } else {
-            navigate("/login"); // Redirect to login page if not logged in
+            navigate("/login");
         }
     };
 

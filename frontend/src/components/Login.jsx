@@ -19,22 +19,23 @@ const Login = () => {
     const [data, setData] = useState(null)
     const navigate = useNavigate()
 
-  async function signInWithEmail() {
-    console.log("En signInWithEmail");
+    async function signInWithEmail() {
+        console.log("En signInWithEmail");
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
-    });
+        const {data, error} = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password,
+        });
 
-    if (!error) {
-        setData(data);
-        navigate("/account", { state: { userData: data } });
-    } else {
-        setError(error);
-        navigate("/login");
+        if (!error) {
+            setData(data);
+            navigate("/account", {state: {userData: data}});
+        } else {
+            setError(error);
+            navigate("/login");
+        }
     }
-}
+
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -45,7 +46,11 @@ const Login = () => {
                     </h2>
 
                     {error && <p className="text-red-500 text-center">{error.message}</p>}
-                    <form className="mt-8 space-y-6" onSubmit={(event) => { event.preventDefault(); signInWithEmail(); }}>                        <div className="rounded-md shadow-sm -space-y-px">
+                    <form className="mt-8 space-y-6" onSubmit={(event) => {
+                        event.preventDefault();
+                        signInWithEmail();
+                    }}>
+                        <div className="rounded-md shadow-sm -space-y-px">
                             <div>
                                 <label htmlFor="email-address" className="sr-only">
                                     Email address
@@ -87,6 +92,7 @@ const Login = () => {
                                 {isLogin ? 'Sign In' : 'Sign Up'}
                             </button>
                         </div>
+
                         <div className="text-sm text-center">
                             <button
                                 type="button"
