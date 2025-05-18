@@ -1,20 +1,11 @@
-// src/components/AccountPage.jsx
-//import { useAuth } from '../context/AuthContext';
-import Login from './Login';
-import AccountHome from './AccountHome';
+import { useLocation } from "react-router-dom";
+import AccountHome from "./AccountHome";
 
 const AccountPage = () => {
-    const { user, token, loading } = useAuth();
+    const location = useLocation();
+    const { userData } = location.state || {}; // Access the passed data
 
-    if (loading) {
-        return <div className="flex justify-center items-center h-screen">Loading...</div>;
-    }
-
-    if (!user || !token) {
-        return <Login />;
-    }
-
-    return <AccountHome />;
+    return <AccountHome userData={userData} />;
 };
 
 export default AccountPage;

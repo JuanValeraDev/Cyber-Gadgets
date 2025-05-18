@@ -15,13 +15,22 @@ import CartSidebar from './CartSidebar'
 import {categories} from "../mock-products.js"
 import {useNavigate} from 'react-router-dom';
 
-export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery}) {
+export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery, session}) {
     const {isDarkMode, toggleTheme} = useTheme()
     const {cartItemsCount, isCartOpen, setIsCartOpen} = useCart()
 
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isMobile, setIsMobile] = useState(false)
 
+
+    // Handle button click
+    const handleAccountButtonClick = () => {
+        if (session) {
+            navigate("/account"); // Redirect to account page if logged in
+        } else {
+            navigate("/login"); // Redirect to login page if not logged in
+        }
+    };
 
     useEffect(() => {
         const handleResize = () => {
@@ -99,13 +108,13 @@ export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery})
                             )}
                         </button>
 
-                        <Link
-                            to="/login"
+                        <button
+                            onClick={() => handleAccountButtonClick()}
                             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                             aria-label="Account"
                         >
                             <UserIcon className="h-6 w-6 text-gray-600 dark:text-gray-300"/>
-                        </Link>
+                        </button>
 
                         <button
                             onClick={() => setIsCartOpen(true)}
