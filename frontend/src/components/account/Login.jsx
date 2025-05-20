@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthError, createClient } from "@supabase/supabase-js";
+import {  createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
     "https://plywzkndxxlnuivlqige.supabase.co",

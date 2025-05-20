@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react'
-import {Link} from 'react-router-dom'
+import { useLocation} from 'react-router-dom'
 import styles from '../styles/Header.module.css'
 import {
     ShoppingCartIcon,
@@ -12,8 +12,9 @@ import {
 import {useTheme} from '../context/ThemeContext'
 import {useCart} from '../context/CartContext'
 import CartSidebar from './CartSidebar'
-import {categories} from "../mock-products.js"
+import {categories} from "../categoriesList.js"
 import {useNavigate} from 'react-router-dom';
+
 
 export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery, session}) {
     const {isDarkMode, toggleTheme} = useTheme()
@@ -21,7 +22,7 @@ export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery, 
 
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isMobile, setIsMobile] = useState(false)
-
+    const location = useLocation()
 
     // Handle button click
     const handleAccountButtonClick = () => {
@@ -42,6 +43,7 @@ export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery, 
                 setIsMobileMenuOpen(false)
             }
         };
+
 
         window.addEventListener('resize', handleResize)
         handleResize()
@@ -108,7 +110,7 @@ export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery, 
                             )}
                         </button>
 
-                        <button
+                        <button hidden={location.pathname==="/account" || location.pathname==="/login"}
                             onClick={() => handleAccountButtonClick()}
                             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                             aria-label="Account"
@@ -116,7 +118,7 @@ export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery, 
                             <UserIcon className="h-6 w-6 text-gray-600 dark:text-gray-300"/>
                         </button>
 
-                        <button
+                        <button hidden={location.pathname==="/account" || location.pathname==="/login"}
                             onClick={() => setIsCartOpen(true)}
                             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 relative"
                             aria-label="Shopping cart"
@@ -135,7 +137,7 @@ export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery, 
 
             {/* Mobile menu dropdown */}
             {isMobile && isMobileMenuOpen && (
-                <div
+                <div hidden={location.pathname==="/account" || location.pathname==="/login"}
                     className="bg-white dark:bg-zinc-700 shadow-lg rounded-b-lg px-4 py-2 absolute top-full left-0 right-0 z-50">
                     <div className="flex flex-col space-y-2 py-2">
                         <button
@@ -158,13 +160,13 @@ export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery, 
                             )}
                         </button>
 
-                        <Link
-                            to="/login"
-                            className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600"
+                        <button
+                                onClick={() => handleAccountButtonClick()}
+                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                                aria-label="Account"
                         >
                             <UserIcon className="h-6 w-6 text-gray-600 dark:text-gray-300"/>
-                            <span className="text-gray-700 dark:text-gray-200">Account</span>
-                        </Link>
+                        </button>
 
                         <button
                             onClick={() => {
@@ -180,7 +182,7 @@ export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery, 
                 </div>
             )}
 
-            <div className={`${styles.categories} dark:border-gray-700`}>
+            <div className={`${styles.categories} dark:border-gray-700`} hidden={location.pathname==="/account" || location.pathname==="/login"}>
                 <button key={"All"} onClick={() => {
                     onCategoryChange("All")
                 }}

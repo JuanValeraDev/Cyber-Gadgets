@@ -1,44 +1,20 @@
 import ProductList from "./ProductList.jsx";
 import Chatbot from "./Chatbot.jsx";
-import {useEffect, useState} from "react";
+import { useState} from "react";
 import debounce from 'lodash.debounce';
 import {MagnifyingGlassIcon} from "@heroicons/react/24/outline/index.js";
+import {API_URL, useFetchIsMobile, useFetchProducts} from "../hooks/Hooks.jsx";
 
 
 export default function Catalog({selectedCategory, onOpenChatbot, isOpen, onSearchQuery, searchQuery}) {
 
     const [isMobile, setIsMobile] = useState(false)
     const [products, setProducts] = useState([]);
-    // eslint-disable-next-line no-undef
-    const API_URL = process.env.NODE_ENV === 'production' ? 'https://cyber-gadgets.onrender.com' : 'http://localhost:5000';
 
 
-    useEffect(() => {
-        async function fetchProducts() {
-            try {
-                const response = await fetch(`${API_URL}/products`)
-                const data = await response.json()
-                setProducts(data)
-            } catch (error) {
-                console.error("Error fetching products:", error)
-            }
-        }
+    useFetchProducts(API_URL, setProducts);
+    useFetchIsMobile(setIsMobile)
 
-        fetchProducts();
-    }, []);
-
-
-    useEffect(() => {
-        const handleResize = () => {
-            const mobile = window.innerWidth < 768
-            setIsMobile(mobile)
-        };
-
-        window.addEventListener('resize', handleResize)
-        handleResize()
-
-        return () => window.removeEventListener('resize', handleResize)
-    }, [])
     const handleSearch = debounce((value) => {
         onSearchQuery(value);
     }, 300);

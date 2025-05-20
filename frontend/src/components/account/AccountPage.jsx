@@ -3,8 +3,7 @@ import AccountHome from "./AccountHome";
 
 const AccountPage = () => {
     const location = useLocation();
-    const { userData } = location.state || {}; // Access the passed data
-
+    const { userData } = location.state || {};
     return <AccountHome userData={userData} />;
 };
 

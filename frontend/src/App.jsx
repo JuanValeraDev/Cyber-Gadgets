@@ -4,24 +4,16 @@ import {CartProvider} from './context/CartContext';
 import Catalog from "./components/Catalog.jsx";
 import Header from './components/Header';
 import Footer from "./components/Footer.jsx";
-import Login from "./components/Login.jsx";
-import AccountPage from "./components/AccountPage.jsx";
+import Login from "./components/account/Login.jsx";
+import AccountPage from "./components/account/AccountPage.jsx";
 /*TODO
-    3. Put an skeleton while the products are loading
     6. Fix the UI chatbot in mobile landscape
 
  */
 
 import './index.css'
 import { useState, useEffect } from 'react'
-import { createClient } from '@supabase/supabase-js'
-
-
-const supabase = createClient(
-    "https://plywzkndxxlnuivlqige.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBseXd6a25keHhsbnVpdmxxaWdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUwNzM0NDIsImV4cCI6MjA2MDY0OTQ0Mn0.RllzUJ6nWn4RrAVMEvud1huuN6G8eRxtBOokB-njTgI"
-);
-
+import {supabase} from "./hooks/Hooks.jsx";
 
 
 function App() {
