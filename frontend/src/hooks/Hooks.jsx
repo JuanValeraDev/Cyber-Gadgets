@@ -22,17 +22,7 @@ export function useProductState() {
     };
 }
 
-// Filtered products based on search term and category
-// Custom hook to get filtered products based on search term and category
-export function useFilteredProducts(products, searchTerm, categoryFilter) {
-    return products.filter(product => {
-        const matchesSearch =
-            product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            product.description.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = categoryFilter === '' || product.category === categoryFilter;
-        return matchesSearch && matchesCategory;
-    });
-}
+
 
 
 export function handleProductSelect(product, setSelectedProduct, setDropdownOpen, setShowModal) {

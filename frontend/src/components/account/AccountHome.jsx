@@ -13,7 +13,7 @@ const supabase = createClient(
 
 const AccountHome = ({userData}) => {
     const navigate = useNavigate();
-    const [activeSection, setActiveSection] = useState('dashboard');
+    const [activeSection, setActiveSection] = useState('main');
 
     // Mock data for display purposes
     const displayName = userData?.user?.email?.split('@')[0] || 'Admin';
