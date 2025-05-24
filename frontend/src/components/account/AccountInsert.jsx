@@ -62,7 +62,7 @@ export default function AccountInsert() {
     };
 
     return (
-        <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
+        <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto mt-6">
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-800">Add New Product</h2>
                 {showSuccess && (

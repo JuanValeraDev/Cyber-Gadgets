@@ -1,5 +1,5 @@
-import {useEffect, useState} from 'react'
-import { useLocation} from 'react-router-dom'
+import { useState} from 'react'
+import {useLocation} from 'react-router-dom'
 import styles from '../styles/Header.module.css'
 import {
     ShoppingCartIcon,
@@ -7,16 +7,18 @@ import {
     SunIcon,
     UserIcon,
     Bars3Icon,
-    XMarkIcon
+    XMarkIcon,
+    BuildingStorefrontIcon
 } from '@heroicons/react/24/outline'
 import {useTheme} from '../context/ThemeContext'
 import {useCart} from '../context/CartContext'
 import CartSidebar from './CartSidebar'
 import {categories} from "../categoriesList.js"
 import {useNavigate} from 'react-router-dom';
+import {useFetchIsMobile} from "../hooks/Hooks.jsx";
 
 
-export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery, session}) {
+export default function Header({selectedCategory, onCategoryChange, onOpenChatbot, onSearchQuery, session}) {
     const {isDarkMode, toggleTheme} = useTheme()
     const {cartItemsCount, isCartOpen, setIsCartOpen} = useCart()
 
@@ -26,30 +28,19 @@ export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery, 
 
     // Handle button click
     const handleAccountButtonClick = () => {
+        setIsMobileMenuOpen(false)
         if (session) {
-            navigate("/account", { state: { userData: session } });
+            navigate("/account", {state: {userData: session}});
         } else {
             navigate("/login");
         }
     };
+    const handleStoreButtonClick=()=>{
+        setIsMobileMenuOpen(false)
+        navigate("/")
+    }
 
-    useEffect(() => {
-        const handleResize = () => {
-            const mobile = window.innerWidth < 768
-            setIsMobile(mobile)
-
-
-            if (!mobile && isMobileMenuOpen) {
-                setIsMobileMenuOpen(false)
-            }
-        };
-
-
-        window.addEventListener('resize', handleResize)
-        handleResize()
-
-        return () => window.removeEventListener('resize', handleResize)
-    }, [isMobileMenuOpen])
+    useFetchIsMobile(setIsMobile)
 
 
     const toggleMobileMenu = () => {
@@ -91,13 +82,43 @@ export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery, 
                         {/* Display cart count indicator on mobile */}
                         {cartItemsCount > 0 && (
                             <span
-                                className="bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center ml-1 -mt-6">
+                                className="absolute bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center ml-8 -mt-6">
                                 {cartItemsCount}
                             </span>
                         )}
                     </div>
                 ) : (
                     <div className={styles.menu}>
+
+                        <button hidden={location.pathname === "/account" || location.pathname === "/login"}
+                                onClick={() => setIsCartOpen(true)}
+                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 relative"
+                                aria-label="Shopping cart"
+                        >
+                            <ShoppingCartIcon className="h-6 w-6 text-gray-600 dark:text-gray-300"/>
+                            {cartItemsCount > 0 && (
+                                <span className="absolute -top-1 -right-1 s-500 text-white text-xs
+                                bg-red-500 rounded-full h-5 w-5 flex items-center justify-center">
+                                    {cartItemsCount}
+                                </span>
+                            )}
+                        </button>
+                        <button hidden={location.pathname === "/account" || location.pathname === "/login"}
+                                onClick={() => handleAccountButtonClick()}
+                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                                aria-label="Account"
+                        >
+                            <UserIcon className="h-6 w-6 text-gray-600 dark:text-gray-300"/>
+                        </button>
+                        <button hidden={location.pathname === "/"}
+                                onClick={() => handleStoreButtonClick()}
+                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                                aria-label="Home"
+                        >
+                            <BuildingStorefrontIcon className="h-6 w-6 text-gray-600 dark:text-gray-300"/>
+                        </button>
+
+
                         <button
                             onClick={toggleTheme}
                             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -109,35 +130,13 @@ export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery, 
                                 <MoonIcon className="h-6 w-6 text-gray-600"/>
                             )}
                         </button>
-
-                        <button hidden={location.pathname==="/account" || location.pathname==="/login"}
-                            onClick={() => handleAccountButtonClick()}
-                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                            aria-label="Account"
-                        >
-                            <UserIcon className="h-6 w-6 text-gray-600 dark:text-gray-300"/>
-                        </button>
-
-                        <button hidden={location.pathname==="/account" || location.pathname==="/login"}
-                            onClick={() => setIsCartOpen(true)}
-                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 relative"
-                            aria-label="Shopping cart"
-                        >
-                            <ShoppingCartIcon className="h-6 w-6 text-gray-600 dark:text-gray-300"/>
-                            {cartItemsCount > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs
-                                rounded-full h-5 w-5 flex items-center justify-center">
-                                    {cartItemsCount}
-                                </span>
-                            )}
-                        </button>
                     </div>
                 )}
             </nav>
 
             {/* Mobile menu dropdown */}
             {isMobile && isMobileMenuOpen && (
-                <div hidden={location.pathname==="/account" || location.pathname==="/login"}
+                <div
                     className="bg-white dark:bg-zinc-700 shadow-lg rounded-b-lg px-4 py-2 absolute top-full left-0 right-0 z-50">
                     <div className="flex flex-col space-y-2 py-2">
                         <button
@@ -159,41 +158,60 @@ export default function Header({onCategoryChange, onOpenChatbot, onSearchQuery, 
                                 </>
                             )}
                         </button>
-
+                        {location.pathname === "/" &&
                         <button
                                 onClick={() => handleAccountButtonClick()}
-                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                                className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600"
                                 aria-label="Account"
                         >
                             <UserIcon className="h-6 w-6 text-gray-600 dark:text-gray-300"/>
-                        </button>
+                            <span className="text-gray-700 dark:text-gray-200">Account</span>
 
-                        <button
-                            onClick={() => {
-                                setIsCartOpen(true)
-                                setIsMobileMenuOpen(false)
-                            }}
-                            className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600"
-                        >
-                            <ShoppingCartIcon className="h-6 w-6 text-gray-600 dark:text-gray-300"/>
-                            <span className="text-gray-700 dark:text-gray-200">Cart ({cartItemsCount})</span>
                         </button>
+                        }
+                        {location.pathname !== "/" && (
+                            <button
+                                onClick={() => handleStoreButtonClick()}
+                                className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600"
+                                aria-label="Home"
+                            >
+                                <BuildingStorefrontIcon className="h-6 w-6 text-gray-600 dark:text-gray-300"/>
+                                <span className="text-gray-700 dark:text-gray-200">Store</span>
+                            </button>
+                        )}
+
+
+                        {
+                            location.pathname !== "/account" && location.pathname !== "/login" &&
+                            <button
+                                onClick={() => {setIsCartOpen(true); setIsMobileMenuOpen(false)}}
+                                className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600"
+                                aria-label="Shopping cart"
+                            >
+                                <ShoppingCartIcon className="h-6 w-6 text-gray-600 dark:text-gray-300"/>
+                                <span className="text-gray-700 dark:text-gray-200">Shopping Cart</span>
+
+                                {cartItemsCount > 0 && (
+                                    <span className=" -top-1 -right-1 bg-red-500 text-white text-xs
+                                rounded-full h-5 w-5 flex items-center justify-center">
+                                    {cartItemsCount}
+                                </span>
+                                )}
+                            </button>
+                        }
                     </div>
                 </div>
             )}
 
-            <div className={`${styles.categories} dark:border-gray-700`} hidden={location.pathname==="/account" || location.pathname==="/login"}>
-                <button key={"All"} onClick={() => {
-                    onCategoryChange("All")
-                }}
-                        className={`${styles.category} dark:text-secondary-dark dark:hover:text-primary-dark bg-gray-100 dark:bg-zinc-800 px-4 rounded-md`}>All
-                </button>
+            <div className={`${styles.categories} dark:border-gray-700`}
+                 hidden={location.pathname === "/account" || location.pathname === "/login"}>
 
-                {categories.categories.map((category) => (
+                {
+                    categories.categories.map((category) => (
                     <button key={category} onClick={() => {
                         onCategoryChange(category)
                     }}
-                            className={`${styles.category} dark:text-secondary-dark dark:hover:text-primary-dark`}>{category}</button>
+                            className={`${styles.category} dark:text-secondary-dark dark:hover:text-primary-dark  px-2 ${selectedCategory === category ? " dark:bg-zinc-800 rounded-md bg-gray-200 text-primary dark:text-primary-dark" : ""}` }>{category}</button>
                 ))}
             </div>
 

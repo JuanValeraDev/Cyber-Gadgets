@@ -81,7 +81,7 @@ export default function AccountDelete() {
 
     return (<>
 
-            <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 mx-auto mt-5 max-w-full">
+            <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 mx-auto  max-w-full mt-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
                     {deleteStatus.show && (
                         <div
@@ -180,7 +180,7 @@ export default function AccountDelete() {
                                             onClick={() => handleProductSelect(product, setSelectedProduct, setDropdownOpen, setShowModal)}
                                         >
                                             <Trash2 size={16} className="mr-1"/>
-                                            Select
+                                            Delete
                                         </button>
                                     </div>
                                 ))}
@@ -243,7 +243,7 @@ export default function AccountDelete() {
                                                     onClick={() => handleProductSelect(product, setSelectedProduct, setDropdownOpen, setShowModal)}
                                                 >
                                                     <Trash2 size={16} className="mr-1"/>
-                                                    Select
+                                                    Delete
                                                 </button>
                                             </td>
                                         </tr>
@@ -262,7 +262,7 @@ export default function AccountDelete() {
             <div>
                 {/* Selected Product Section */}
                 {selectedProduct && showModal && (
-                    <div className="fixed inset-0 flex items-center justify-center z-40">
+                    <div className="fixed inset-0 flex items-center justify-center z-40 bg-black bg-opacity-50 ">
                         <div
                             className="bg-white rounded-lg p-6 max-w-md w-full mx-4 border border-gray-200 shadow-lg">
                             <div

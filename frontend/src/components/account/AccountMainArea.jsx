@@ -59,41 +59,41 @@ const renderIcon = (iconName) => {
 };
 
 export const AccountMainArea = ({userData, displayName, signOutWithEmail}) => {
-    return <main className="flex-1 relative overflow-y-auto focus:outline-none">
+    return <main className="flex-1 relative overflow-y-auto focus:outline-none dark:bg-zinc-800">
         <div className="py-6">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                 {/* Admin Info Card */}
-                <div className="bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200 mb-8">
+                <div className="bg-white dark:bg-zinc-700 overflow-hidden shadow rounded-lg divide-y divide-gray-200 mb-8">
                     <div className="px-4 py-5 sm:px-6">
-                        <h3 className="text-lg leading-6 font-medium text-gray-900">Administrator
+                        <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">Administrator
                             Profile</h3>
-                        <p className="mt-1 max-w-2xl text-sm text-gray-500">Personal details and account
+                        <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-white">Personal details and account
                             information.</p>
                     </div>
                     <div className="px-4 py-5 sm:p-6">
                         <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                             <div className="sm:col-span-1">
-                                <dt className="text-sm font-medium text-gray-500">Email</dt>
-                                <dd className="mt-1 text-sm text-gray-900">{userData?.user?.email}</dd>
+                                <dt className="text-sm font-medium text-gray-500 dark:text-gray-200" >Email</dt>
+                                <dd className="mt-1 text-sm text-gray-900 dark:text-gray-200">{userData?.user?.email}</dd>
                             </div>
                             <div className="sm:col-span-1">
-                                <dt className="text-sm font-medium text-gray-500">Display name</dt>
-                                <dd className="mt-1 text-sm text-gray-900">{displayName}</dd>
+                                <dt className="text-sm font-medium text-gray-500 dark:text-gray-200">Display name</dt>
+                                <dd className="mt-1 text-sm text-gray-900 dark:text-gray-200">{displayName}</dd>
                             </div>
                             <div className="sm:col-span-1">
-                                <dt className="text-sm font-medium text-gray-500">Last login</dt>
-                                <dd className="mt-1 text-sm text-gray-900">{lastLogin}</dd>
+                                <dt className="text-sm font-medium text-gray-500 dark:text-gray-200">Last login</dt>
+                                <dd className="mt-1 text-sm text-gray-900 dark:text-gray-200">{lastLogin}</dd>
                             </div>
                             <div className="sm:col-span-1">
-                                <dt className="text-sm font-medium text-gray-500">Role</dt>
-                                <dd className="mt-1 text-sm text-gray-900">Administrator</dd>
+                                <dt className="text-sm font-medium text-gray-500 dark:text-gray-200">Role</dt>
+                                <dd className="mt-1 text-sm text-gray-900 dark:text-gray-200">Administrator</dd>
                             </div>
                         </dl>
                     </div>
                     <div className="px-4 py-4 sm:px-6">
                         <button
                             onClick={signOutWithEmail}
-                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-secondary dark:bg-primary-dark dark:hover:bg-terciary-dark focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                         >
                             Sign out
                         </button>

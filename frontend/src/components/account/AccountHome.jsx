@@ -83,13 +83,13 @@ const AccountHome = ({userData}) => {
     };
 
     return (
-        <div className="flex h-screen bg-gray-100">
+        <div className="flex  bg-gray-100">
             {/* Sidebar */}
             <div className="hidden md:flex md:flex-shrink-0">
                 <div className="flex flex-col w-64">
-                    <div className="flex flex-col flex-grow pt-5 overflow-y-auto bg-primary">
+                    <div className="flex flex-col flex-grow pt-5 overflow-y-auto bg-primary dark:bg-zinc-950">
                         <div className="flex items-center flex-shrink-0 px-4">
-                            <h1 className="text-xl font-semibold text-white">E-Commerce Admin</h1>
+                            <h1 className="text-xl font-semibold text-white dark:text-secondary-dark">E-Commerce Admin</h1>
                         </div>
                         <div className="mt-5 flex-grow flex flex-col">
                             <nav className="flex-1 px-2 space-y-1">
@@ -99,8 +99,8 @@ const AccountHome = ({userData}) => {
                                         onClick={() => setActiveSection(item.id)}
                                         className={`${
                                             activeSection === item.id
-                                                ? 'bg-secondary text-white'
-                                                : 'text-white hover:bg-primary-light'
+                                                ? 'bg-secondary text-white dark:bg-zinc-800 dark:text-primary-dark'
+                                                : 'text-white hover:dark:text-primary-dark dark:text-secondary-dark'
                                         } group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full`}
                                     >
                                         <div className="mr-3 h-5 w-5">{renderNavIcon(item.icon)}</div>
@@ -135,10 +135,10 @@ const AccountHome = ({userData}) => {
             {/* Main content */}
             <div className="flex flex-col flex-1 overflow-hidden">
                 {/* Top navigation */}
-                <div className="relative z-10 flex-shrink-0 flex h-16 bg-white shadow">
+                <div className="relative z-10 flex-shrink-0 flex h-16 bg-white dark:bg-primary-dark shadow border-b">
                     <div className="flex-1 px-4 flex justify-between">
                         <div className="flex-1 flex">
-                            <h2 className="text-2xl font-semibold text-gray-800 self-center">
+                            <h2 className="text-2xl font-semibold text-gray-800 self-center dark:text-white">
                                 {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
                             </h2>
                         </div>

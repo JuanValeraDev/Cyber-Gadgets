@@ -45,7 +45,7 @@ function App() {
                     <CartProvider>
                         <div
                             className="min-h-screen flex flex-col bg-gray-100 dark:bg-black transition-colors duration-200">
-                            <Header onCategoryChange={setSelectedCategory} onOpenChatbot={setIsOpen}
+                            <Header selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} onOpenChatbot={setIsOpen}
                                     onSearchQuery={setSearchQuery} session={session}/>
                             <div className="flex-grow">
                                 <Routes>

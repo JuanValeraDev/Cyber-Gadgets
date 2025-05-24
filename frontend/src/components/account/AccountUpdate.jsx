@@ -146,7 +146,7 @@ export default function AccountUpdate() {
 
     return (<>
             {!showModal &&
-                <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
+                <div className="bg-white rounded-lg shadow-lg p-6 max-w-full mx-auto  mt-6  ">
                     <div className="flex justify-between items-center mb-6">
                         {showSuccess && (
                             <div className="bg-green-100 text-green-700 px-4 py-2 rounded-md flex items-center">
@@ -246,7 +246,7 @@ export default function AccountUpdate() {
                                                 onClick={() => handleProductSelect(product, setSelectedProduct, setDropdownOpen, setShowModal)}
                                             >
                                                 <ArrowBigUp size={16} className="mr-1"/>
-                                                Select
+                                                Update
                                             </button>
                                         </div>
                                     ))}
@@ -309,7 +309,7 @@ export default function AccountUpdate() {
                                                         onClick={() => handleProductSelect(product, setSelectedProduct, setDropdownOpen, setShowModal)}
                                                     >
                                                         <ArrowBigUp size={16} className="mr-1"/>
-                                                        Select
+                                                        Update
                                                     </button>
                                                 </td>
                                             </tr>
@@ -328,8 +328,9 @@ export default function AccountUpdate() {
 
 
             {selectedProduct && showModal && (
-<div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl w-full mx-auto max-h-screen overflow-y-auto">
-    <div className="space-y-6">
+                <div
+                    className="bg-white rounded-lg shadow-lg p-6 max-w-2xl w-full mx-auto max-h-screen overflow-y-auto mt-6">
+                    <div className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Left column */}
                             <div className="space-y-6">
@@ -495,6 +496,17 @@ export default function AccountUpdate() {
                         </div>
 
                         <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                            <button
+                                type="button"
+                                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 flex items-center"
+                                onClick={() => setShowModal(false)}
+                            >
+                                <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2"
+                                     viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
+                                </svg>
+                                Back to List
+                            </button>
                             <button
                                 type="button"
                                 disabled={!hasChanges}
