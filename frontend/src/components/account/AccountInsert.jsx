@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { Save, X, ImagePlus } from 'lucide-react';
+import {useState} from 'react';
+import {Save, X, ImagePlus} from 'lucide-react';
 import {categories} from '../../categoriesList.js'
-import {supabase} from "../../hooks/Hooks.jsx";
+import {handleFormChange, handleImageInputChange, supabase} from "../../hooks/Hooks.jsx";
+
 
 export default function AccountInsert() {
     const [formData, setFormData] = useState({
@@ -19,35 +20,33 @@ export default function AccountInsert() {
     const [showSuccess, setShowSuccess] = useState(false);
 
 
+    const handleChange = handleFormChange(setFormData);
+    const handleImageChange = handleImageInputChange(setFormData, setImagePreview);
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setFormData({
-            ...formData,
-            [name]: type === 'checkbox' ? checked : value
-        });
-    };
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setFormData({
-                ...formData,
-                image: file
-            });
-
-            const reader = new FileReader();
-            reader.onload = () => {
-                setImagePreview(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitting(true);
 
+
+        const {data, error} = await supabase
+            .from('products')
+            .insert([
+                {
+                    name: formData.name,
+                    price: parseFloat(formData.price),
+                    description: formData.description,
+                    stock: parseInt(formData.stock),
+                    category: formData.category,
+                    isNew: Boolean(formData.isNew),
+                    image: formData.image
+                },
+            ])
+        if (error) {
+            console.log("Error: " + error.name + error.message)
+        }
+        setSubmitting(false);
+        setShowSuccess(true);
 
         setFormData({
             name: '',
@@ -58,6 +57,7 @@ export default function AccountInsert() {
             isNew: false,
             image: null
         })
+
 
     };
 
@@ -190,10 +190,11 @@ export default function AccountInsert() {
                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                 Product Image
                             </label>
-                            <div className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md ${imagePreview ? 'border-green-300 bg-green-50' : 'border-gray-300 hover:border-gray-400'}`}>
+                            <div
+                                className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md ${imagePreview ? 'border-green-300 bg-green-50' : 'border-gray-300 hover:border-gray-400'}`}>
                                 {imagePreview ? (
                                     <div className="space-y-2 text-center">
-                                        <img src={imagePreview} alt="Preview" className="mx-auto h-32 object-contain" />
+                                        <img src={imagePreview} alt="Preview" className="mx-auto h-32 object-contain"/>
                                         <button
                                             type="button"
                                             onClick={() => {
@@ -202,16 +203,17 @@ export default function AccountInsert() {
                                             }}
                                             className="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                                         >
-                                            <X size={16} className="mr-1" />
+                                            <X size={16} className="mr-1"/>
                                             Remove
                                         </button>
                                     </div>
                                 ) : (
                                     <div className="space-y-1 text-center">
                                         <div className="flex text-sm text-gray-600">
-                                            <label htmlFor="image-upload" className="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none">
+                                            <label htmlFor="image-upload"
+                                                   className="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none">
                                                 <div className="flex flex-col items-center">
-                                                    <ImagePlus className="mx-auto h-12 w-12 text-gray-400" />
+                                                    <ImagePlus className="mx-auto h-12 w-12 text-gray-400"/>
                                                     <span>Upload a file</span>
                                                     <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
                                                 </div>
@@ -259,15 +261,18 @@ export default function AccountInsert() {
                     >
                         {submitting ? (
                             <>
-                                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor"
+                                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
                                 Processing...
                             </>
                         ) : (
                             <>
-                                <Save size={16} className="mr-2" />
+                                <Save size={16} className="mr-2"/>
                                 Save Product
                             </>
                         )}

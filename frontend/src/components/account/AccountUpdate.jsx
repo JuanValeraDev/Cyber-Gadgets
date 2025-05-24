@@ -1,12 +1,18 @@
 import {useState, useEffect} from 'react';
-import {Save, RefreshCw, X, ImagePlus, ChevronDown} from 'lucide-react';
-import {API_URL, useFetchProducts} from "../../hooks/Hooks.jsx";
+import {Save, RefreshCw, X, ImagePlus, ChevronDown, Search, Trash2} from 'lucide-react';
+import {
+    API_URL,
+    supabase,
+    useFetchProducts,
+    useFilteredProducts,
+    useProductState
+} from "../../hooks/Hooks.jsx";
+import {handleFormChange, handleImageInputChange} from '../../hooks/Hooks.jsx';
+import {categories} from "../../categoriesList.js";
 
 
 export default function AccountUpdate() {
 
-    const [products, setProducts] = useState([])
-    const [selectedProductId, setSelectedProductId] = useState('');
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
@@ -23,23 +29,20 @@ export default function AccountUpdate() {
     const [submitting, setSubmitting] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [hasChanges, setHasChanges] = useState(false);
+    const [categoryFilter, setCategoryFilter] = useState('');
+    const [categoriesOpen, setCategoriesOpen] = useState(false);
 
-    const categories = [
-        "Electronics",
-        "Clothing",
-        "Home & Kitchen",
-        "Books",
-        "Beauty & Personal Care",
-        "Toys & Games",
-        "Sports & Outdoors"
-    ];
+    const {products, setProducts, searchTerm, setSearchTerm, selectedProduct, setSelectedProduct} = useProductState()
+
 
     useFetchProducts(API_URL, setProducts);
+    useFilteredProducts(products,searchTerm,categoryFilter)
+
 
     useEffect(() => {
         // When selected product changes, load its data
-        if (selectedProductId) {
-            const product = products.find(p => p.id === parseInt(selectedProductId));
+        if (selectedProduct) {
+            const product = products.find(p => p.id === parseInt(selectedProduct.id));
             if (product) {
                 const newFormData = {
                     name: product.name,
@@ -57,7 +60,7 @@ export default function AccountUpdate() {
                 setHasChanges(false);
             }
         }
-    }, [selectedProductId]);
+    }, [selectedProduct]);
 
     useEffect(() => {
         // Check if form has changes compared to original data
@@ -75,48 +78,33 @@ export default function AccountUpdate() {
         }
     }, [formData, originalData]);
 
-    const handleChange = (e) => {
-        const {name, value, type, checked} = e.target;
-        setFormData({
-            ...formData,
-            [name]: type === 'checkbox' ? checked : value
-        });
-    };
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setFormData({
-                ...formData,
-                image: file
-            });
+    const handleChange = handleFormChange(setFormData);
+    const handleImageChange = handleImageInputChange(setFormData, setImagePreview);
 
-            const reader = new FileReader();
-            reader.onload = () => {
-                setImagePreview(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitting(true);
 
-        // Simulate API call
-        setTimeout(() => {
-            console.log('Product updated:', formData);
-            console.log('Product ID:', selectedProductId);
-            setSubmitting(false);
-            setShowSuccess(true);
-            setHasChanges(false);
-            setOriginalData({...formData});
-
-            // Reset success message after delay
-            setTimeout(() => {
-                setShowSuccess(false);
-            }, 3000);
-        }, 1500);
+        const {data, error} = await supabase
+            .from('products')
+            .update([
+                {
+                    name: formData.name,
+                    price: parseFloat(formData.price),
+                    description: formData.description,
+                    stock: parseInt(formData.stock),
+                    category: formData.category,
+                    isNew: Boolean(formData.isNew),
+                    image: formData.image
+                },
+            ]).eq('id', parseInt(selectedProduct.id));
+        if (error) {
+            console.log("Error: " + error.name + error.message)
+        }
+        setSubmitting(false);
+        setShowSuccess(true);
+        setHasChanges(false);
     };
 
     const handleReset = () => {
@@ -125,61 +113,190 @@ export default function AccountUpdate() {
             setHasChanges(false);
 
             // If there was an image in the original data, reset to that
-            const product = products.find(p => p.id === parseInt(selectedProductId));
+            const product = products.find(p => p.id === parseInt(selectedProduct.id));
             if (product) {
                 setImagePreview(product.imageUrl);
             }
         }
     };
 
-    return (
-        <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-primary">Update Product</h2>
-                {showSuccess && (
-                    <div className="bg-green-100 text-green-700 px-4 py-2 rounded-md flex items-center">
-                        <span className="font-medium">Product updated successfully!</span>
-                    </div>
-                )}
-            </div>
-
-            {/* Product Selection Dropdown */}
-            <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Select Product to Update
-                </label>
-                <div className="relative">
-                    <div
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md flex justify-between items-center cursor-pointer bg-white"
-                        onClick={() => setDropdownOpen(!dropdownOpen)}
-                    >
-            <span className={selectedProductId ? 'text-gray-900' : 'text-gray-500'}>
-              {selectedProductId
-                  ? products.find(p => p.id === parseInt(selectedProductId))?.name
-                  : 'Select a product'}
-            </span>
-                        <ChevronDown size={20}
-                                     className={`text-gray-500 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}/>
-                    </div>
-
-                    {dropdownOpen && (
-                        <div
-                            className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-                            {products.map((product) => (
-                                <div
-                                    key={product.id}
-                                    className="px-4 py-2 hover:bg-secondary hover:text-white cursor-pointer"
-                                    onClick={() => {
-                                        setSelectedProductId(product.id.toString());
-                                        setDropdownOpen(false);
-                                    }}
-                                >
-                                    {product.name}
-                                </div>
-                            ))}
+    return (<>
+            <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-bold text-primary">Update Product</h2>
+                    {showSuccess && (
+                        <div className="bg-green-100 text-green-700 px-4 py-2 rounded-md flex items-center">
+                            <span className="font-medium">Product updated successfully!</span>
                         </div>
                     )}
                 </div>
+
+                {/* Search and Filter Section */}
+                <div className="mb-6 space-y-4">
+                    <div className="flex flex-col gap-4 sm:flex-row">
+                        {/* Search Input */}
+                        <div className="relative flex-grow">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <Search size={18} className="text-gray-400"/>
+                            </div>
+                            <input
+                                type="text"
+                                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-primary text-sm"
+                                placeholder="Search products by name or description..."
+                                value={searchTerm}
+                                onChange={handleSearch}
+                            />
+                        </div>
+
+                        {/* Category Filter */}
+                        <div className="relative w-full sm:w-64">
+                            <div
+                                className="w-full px-4 py-2 border border-gray-300 rounded-md flex justify-between items-center cursor-pointer bg-white"
+                                onClick={() => setCategoriesOpen(!categoriesOpen)}
+                            >
+                    <span className={categoryFilter ? 'text-gray-900' : 'text-gray-500'}>
+                        {categoryFilter || 'Filter by category'}
+                    </span>
+                                <ChevronDown size={18}
+                                             className={`text-gray-500 transition-transform ${categoriesOpen ? 'rotate-180' : ''}`}/>
+                            </div>
+
+                            {categoriesOpen && (
+                                <div
+                                    className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                                    <div
+                                        className="px-4 py-2 hover:bg-secondary hover:text-white cursor-pointer border-b border-gray-200"
+                                        onClick={() => {
+                                            setCategoryFilter('');
+                                            setCategoriesOpen(false);
+                                        }}
+                                    >
+                                        All Categories
+                                    </div>
+                                    {categories.categories.map((category) => (
+                                        <div
+                                            key={category}
+                                            className="px-4 py-2 hover:bg-secondary hover:text-white cursor-pointer"
+                                            onClick={() => {
+                                                setCategoryFilter(category);
+                                                setCategoriesOpen(false);
+                                            }}
+                                        >
+                                            {category}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Product List Section */}
+                {filteredProducts.length > 0 ? (
+                    <div className="mb-6">
+                        <div className="block sm:hidden">
+                            <div className="grid gap-4" style={{maxHeight: '60vh', overflowY: 'auto'}}>
+                                {filteredProducts.map((product) => (
+                                    <div key={product.id}
+                                         className="bg-white border border-gray-200 rounded-lg p-4 flex flex-col">
+                                        <div className="flex items-center mb-2">
+                                            <img className="h-28 w-28 rounded-full object-cover" src={product.image}
+                                                 alt={product.name}/>
+                                            <div className="ml-4 flex-1">
+                                                <div
+                                                    className="text-base font-medium text-gray-900">{product.name}</div>
+                                                {product.isNew && <span
+                                                    className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">New</span>}
+                                            </div>
+                                        </div>
+                                        <div className="text-sm text-gray-500 mb-1">Category: <span
+                                            className="text-gray-900">{product.category}</span></div>
+                                        <div className="text-sm text-gray-500 mb-1">Price: <span
+                                            className="text-gray-900">${product.price.toFixed(2)}</span></div>
+                                        <div className="text-sm text-gray-500 mb-2">Stock: <span
+                                            className="text-gray-900">{product.stock}</span></div>
+                                        <button
+                                            className="text-white bg-terciary hover:bg-terciary-light px-3 py-1 rounded-md inline-flex items-center self-end"
+                                            onClick={() => handleProductSelect(product)}
+                                        >
+                                            <Trash2 size={16} className="mr-1"/>
+                                            Select
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="hidden sm:block">
+                            <div className="overflow-x-auto border border-gray-200 rounded-lg"
+                                 style={{maxHeight: '60vh', overflowY: 'auto'}}>
+                                <table className="min-w-full divide-y divide-gray-200">
+                                    <thead className="bg-gray-50">
+                                    <tr>
+                                        <th scope="col"
+                                            className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Product
+                                        </th>
+                                        <th scope="col"
+                                            className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Category
+                                        </th>
+                                        <th scope="col"
+                                            className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Price
+                                        </th>
+                                        <th scope="col"
+                                            className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Stock
+                                        </th>
+                                        <th scope="col"
+                                            className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Action
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody className="bg-white divide-y divide-gray-200">
+                                    {filteredProducts.map((product) => (
+                                        <tr key={product.id} className="hover:bg-gray-50">
+                                            <td className="px-4 py-4 whitespace-nowrap">
+                                                <div className="flex items-center">
+                                                    <div className="h-20 w-20 flex-shrink-0">
+                                                        <img className="h-20 w-20 rounded-full object-cover"
+                                                             src={product.image}
+                                                             alt={product.name}/>
+                                                    </div>
+                                                    <div className="ml-4">
+                                                        <div
+                                                            className="text-sm font-medium text-gray-900">{product.name}</div>
+                                                        {product.isNew && <span
+                                                            className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">New</span>}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-4 py-4 whitespace-nowrap">
+                                                <div className="text-sm text-gray-500">{product.category}</div>
+                                            </td>
+                                            <td className="px-4 py-4 whitespace-nowrap">
+                                                <div className="text-sm text-gray-900">${product.price.toFixed(2)}</div>
+                                            </td>
+                                            <td className="px-4 py-4 whitespace-nowrap">
+                                                <div className="text-sm text-gray-900">{product.stock}</div>
+                                            </td>
+                                            <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                                                <button
+                                                    className="text-white bg-terciary hover:bg-terciary-light px-3 py-1 rounded-md inline-flex items-center"
+                                                    onClick={() => handleProductSelect(product)}
+                                                >
+                                                    <Trash2 size={16} className="mr-1"/>
+                                                    Select
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="py-6 text-center bg-gray-50 rounded-lg border border-gray-200">
+                        <p className="text-gray-500">No products found matching your criteria.</p>
+                    </div>
+                )}
             </div>
 
             {selectedProductId && (
@@ -386,6 +503,6 @@ export default function AccountUpdate() {
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 }
