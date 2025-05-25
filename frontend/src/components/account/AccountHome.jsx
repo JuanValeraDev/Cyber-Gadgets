@@ -31,7 +31,7 @@ const AccountHome = ({userData}) => {
     // Navigation items
     const navItems = [
         {name: 'Main', icon: 'home', id: 'main'},
-        {name: 'Insert', icon: 'box', id: 'insert'},
+        {name: 'Insert', icon: 'box', id: 'create'},
         {name: 'Update', icon: 'shopping-bag', id: 'update'},
         {name: 'Delete', icon: 'users', id: 'delete'},
     ];
@@ -133,13 +133,13 @@ const AccountHome = ({userData}) => {
             </div>
 
             {/* Main content */}
-            <div className="flex flex-col flex-1 overflow-hidden">
+            <div className="flex flex-col flex-1 overflow-hidden dark:bg-zinc-800">
                 {/* Top navigation */}
                 <div className="relative z-10 flex-shrink-0 flex h-16 bg-white dark:bg-primary-dark shadow border-b">
                     <div className="flex-1 px-4 flex justify-between">
                         <div className="flex-1 flex">
                             <h2 className="text-2xl font-semibold text-gray-800 self-center dark:text-white">
-                                {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
+                                {activeSection &&  activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
                             </h2>
                         </div>
                         <div className="md:hidden ml-4 flex items-center">
@@ -172,9 +172,9 @@ const AccountHome = ({userData}) => {
 
                 {(activeSection === "main") &&
                     <AccountMainArea userData={userData} displayName={displayName}
-                                     signOutWithEmail={signOutWithEmail}/>}
+                                     signOutWithEmail={signOutWithEmail} setActiveSection={setActiveSection}/>}
 
-                {(activeSection === "insert") &&
+                {(activeSection === "create") &&
                     <AccountInsert/>
                 }  {(activeSection === "update") &&
                     <AccountUpdate/>}

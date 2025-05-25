@@ -62,9 +62,9 @@ export default function AccountInsert() {
     };
 
     return (
-        <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto mt-6">
+        <div className="bg-white rounded-lg shadow-lg px-20 py-14 max-w-full mx-auto mt-6 mb-6 dark:bg-zinc-700 dark:border-2 dark:border-terciary-dark ">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Add New Product</h2>
+                <h2 className="text-2xl font-bold text-primary dark:text-primary-dark">Add New Product</h2>
                 {showSuccess && (
                     <div className="bg-green-100 text-green-700 px-4 py-2 rounded-md flex items-center">
                         <span className="font-medium">Product added successfully!</span>
@@ -78,7 +78,8 @@ export default function AccountInsert() {
                     <div className="space-y-6">
                         {/* Product Name */}
                         <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="name"
+                                   className="block text-sm font-medium text-gray-700 mb-1 dark:text-secondary-dark">
                                 Product Name *
                             </label>
                             <input
@@ -88,14 +89,16 @@ export default function AccountInsert() {
                                 value={formData.name}
                                 onChange={handleChange}
                                 required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                dark:bg-gray-950 dark:border-gray-500 dark:text-white dark:placeholder-gray-400"
                                 placeholder="Enter product name"
                             />
                         </div>
 
                         {/* Price */}
                         <div>
-                            <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="price"
+                                   className="block text-sm font-medium text-gray-700 mb-1 dark:text-secondary-dark">
                                 Price ($) *
                             </label>
                             <input
@@ -107,14 +110,17 @@ export default function AccountInsert() {
                                 min="0"
                                 step="0.01"
                                 required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                                                dark:bg-gray-950 dark:border-gray-500 dark:text-white dark:placeholder-gray-400"
+
                                 placeholder="0.00"
                             />
                         </div>
 
                         {/* Stock */}
                         <div>
-                            <label htmlFor="stock" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="stock"
+                                   className="block text-sm font-medium text-gray-700 mb-1 dark:text-secondary-dark">
                                 Stock Quantity *
                             </label>
                             <input
@@ -125,14 +131,17 @@ export default function AccountInsert() {
                                 onChange={handleChange}
                                 min="0"
                                 required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                                                dark:bg-gray-950 dark:border-gray-500 dark:text-white dark:placeholder-gray-400"
+
                                 placeholder="Available quantity"
                             />
                         </div>
 
                         {/* Category */}
                         <div>
-                            <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="category"
+                                   className="block text-sm font-medium text-gray-700 mb-1 dark:text-secondary-dark">
                                 Category *
                             </label>
                             <select
@@ -141,17 +150,20 @@ export default function AccountInsert() {
                                 value={formData.category}
                                 onChange={handleChange}
                                 required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white                                 dark:bg-gray-950 dark:border-gray-500 dark:text-white dark:placeholder-gray-400"
+
                             >
-                                <option value="" disabled>Select category</option>
-                                {categories.categories.map((category) => (
-                                    <option key={category} value={category}>{category}</option>
-                                ))}
+                                <option value="">Select category</option>
+                                {categories.categories.map((category) => {
+                                    if (category !== "All") {
+                                        return <option key={category} value={category}>{category}</option>
+                                    }
+                                })}
                             </select>
                         </div>
 
                         {/* Is New Toggle */}
-                        <div className="flex items-center">
+                        <div className="flex items-center dark:text-secondary-dark">
                             <input
                                 type="checkbox"
                                 id="isNew"
@@ -160,7 +172,8 @@ export default function AccountInsert() {
                                 onChange={handleChange}
                                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                             />
-                            <label htmlFor="isNew" className="ml-2 block text-sm text-gray-700">
+                            <label htmlFor="isNew"
+                                   className="ml-2 block text-sm text-gray-700 dark:text-secondary-dark">
                                 Mark as New Product
                             </label>
                         </div>
@@ -170,7 +183,8 @@ export default function AccountInsert() {
                     <div className="space-y-6">
                         {/* Description */}
                         <div>
-                            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="description"
+                                   className="block text-sm font-medium text-gray-700 mb-1 dark:text-secondary-dark">
                                 Description *
                             </label>
                             <textarea
@@ -180,7 +194,9 @@ export default function AccountInsert() {
                                 onChange={handleChange}
                                 rows="5"
                                 required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                                               dark:bg-gray-950 dark:border-gray-500 dark:text-white dark:placeholder-gray-400"
+
                                 placeholder="Enter product description"
                             ></textarea>
                         </div>
@@ -191,7 +207,7 @@ export default function AccountInsert() {
                                 Product Image
                             </label>
                             <div
-                                className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md ${imagePreview ? 'border-green-300 bg-green-50' : 'border-gray-300 hover:border-gray-400'}`}>
+                                className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md ${imagePreview ? 'border-green-300 bg-green-50' : 'border-gray-300 hover:border-gray-400'} dark:hover:border-primary-dark`}>
                                 {imagePreview ? (
                                     <div className="space-y-2 text-center">
                                         <img src={imagePreview} alt="Preview" className="mx-auto h-32 object-contain"/>
@@ -213,8 +229,8 @@ export default function AccountInsert() {
                                             <label htmlFor="image-upload"
                                                    className="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none">
                                                 <div className="flex flex-col items-center">
-                                                    <ImagePlus className="mx-auto h-12 w-12 text-gray-400"/>
-                                                    <span>Upload a file</span>
+                                                    <ImagePlus className="mx-auto h-12 w-12 text-gray-400 dark:text-primary-dark"/>
+                                                    <span className="dark:text-secondary-dark text-primary">Upload a file</span>
                                                     <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
                                                 </div>
                                                 <input
@@ -237,7 +253,7 @@ export default function AccountInsert() {
                 <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
                     <button
                         type="button"
-                        className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                        className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-600 dark:text-white"
                         onClick={() => {
                             setFormData({
                                 name: '',
@@ -257,7 +273,8 @@ export default function AccountInsert() {
                         type="button"
                         disabled={submitting}
                         onClick={handleSubmit}
-                        className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${submitting ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'}`}
+                        className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${submitting ? 'bg-blue-400' : 'bg-primary hover:bg-secondary'}
+                        dark:bg-primary-dark`}
                     >
                         {submitting ? (
                             <>
@@ -272,7 +289,7 @@ export default function AccountInsert() {
                             </>
                         ) : (
                             <>
-                                <Save size={16} className="mr-2"/>
+                                <Save size={16} className="mr-2 "/>
                                 Save Product
                             </>
                         )}
