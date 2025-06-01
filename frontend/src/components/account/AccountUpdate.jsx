@@ -108,7 +108,7 @@ export default function AccountUpdate() {
 
         const {data, error} = await supabase
             .from('products')
-            .update([
+            .update(
                 {
                     name: formData.name,
                     price: parseFloat(formData.price),
@@ -117,8 +117,8 @@ export default function AccountUpdate() {
                     category: formData.category,
                     isNew: Boolean(formData.isNew),
                     image: formData.image
-                },
-            ]).eq('id', parseInt(selectedProduct.id));
+                }
+            ).eq('id', parseInt(selectedProduct.id));
         if (error) {
             console.log("Error: " + error.name + error.message)
         }

@@ -5,6 +5,7 @@ import {AccountMainArea} from "./AccountMainArea.jsx";
 import AccountInsert from "./AccountInsert.jsx";
 import AccountUpdate from "./AccountUpdate.jsx";
 import AccountDelete from "./AccountDelete.jsx";
+import {HomeIcon, PlusIcon,PencilIcon, TrashIcon} from "@heroicons/react/16/solid/index.js";
 
 const supabase = createClient(
     "https://plywzkndxxlnuivlqige.supabase.co",
@@ -14,10 +15,10 @@ const supabase = createClient(
 const AccountHome = ({userData}) => {
     const navigate = useNavigate();
     const [activeSection, setActiveSection] = useState('main');
+    const [showMobileMenu, setShowMobileMenu] = useState(false)
 
     // Mock data for display purposes
     const displayName = userData?.user?.email?.split('@')[0] || 'Admin';
-
 
 
     async function signOutWithEmail() {
@@ -31,9 +32,9 @@ const AccountHome = ({userData}) => {
     // Navigation items
     const navItems = [
         {name: 'Main', icon: 'home', id: 'main'},
-        {name: 'Insert', icon: 'box', id: 'create'},
-        {name: 'Update', icon: 'shopping-bag', id: 'update'},
-        {name: 'Delete', icon: 'users', id: 'delete'},
+        {name: 'Insert', icon: 'insert', id: 'create'},
+        {name: 'Update', icon: 'update', id: 'update'},
+        {name: 'Delete', icon: 'delete', id: 'delete'},
     ];
 
     // Render navigation icon
@@ -41,33 +42,19 @@ const AccountHome = ({userData}) => {
         switch (iconName) {
             case 'home':
                 return (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path
-                            d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
-                    </svg>
+                    <HomeIcon/>
                 );
-            case 'box':
+            case 'insert':
                 return (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd"
-                              d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"
-                              clipRule="evenodd"/>
-                    </svg>
+                   <PlusIcon/>
                 );
-            case 'shopping-bag':
+            case 'update':
                 return (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd"
-                              d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"
-                              clipRule="evenodd"/>
-                    </svg>
+                  <PencilIcon/>
                 );
-            case 'users':
+            case 'delete':
                 return (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path
-                            d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
-                    </svg>
+                 <TrashIcon/>
                 );
             case 'settings':
                 return (
@@ -89,7 +76,8 @@ const AccountHome = ({userData}) => {
                 <div className="flex flex-col w-64">
                     <div className="flex flex-col flex-grow pt-5 overflow-y-auto bg-primary dark:bg-zinc-950">
                         <div className="flex items-center flex-shrink-0 px-4">
-                            <h1 className="text-xl font-semibold text-white dark:text-secondary-dark">E-Commerce Admin</h1>
+                            <h1 className="text-xl font-semibold text-white dark:text-secondary-dark">E-Commerce
+                                Admin</h1>
                         </div>
                         <div className="mt-5 flex-grow flex flex-col">
                             <nav className="flex-1 px-2 space-y-1">
@@ -139,13 +127,16 @@ const AccountHome = ({userData}) => {
                     <div className="flex-1 px-4 flex justify-between">
                         <div className="flex-1 flex">
                             <h2 className="text-2xl font-semibold text-gray-800 self-center dark:text-white">
-                                {activeSection &&  activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
+                                {activeSection && activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
                             </h2>
                         </div>
                         <div className="md:hidden ml-4 flex items-center">
                             {/* Mobile menu button */}
                             <button
-                                className="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                className="bg-white dark:bg-black p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                                onClick={() => setShowMobileMenu?.(prev => !prev)}
+                                aria-label="Open sidebar menu"
+                            >
                                 <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
                                      viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
@@ -156,11 +147,11 @@ const AccountHome = ({userData}) => {
                         <div className="ml-4 flex items-center md:ml-6">
                             <div className="ml-3 relative">
                                 <div>
-                                    <button
-                                        className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                    <button onClick={() => setActiveSection('main')}
+                                            className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                                         <span className="sr-only">Open user menu</span>
                                         <div
-                                            className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center text-white">
+                                            className="h-8 w-8 rounded-full bg-secondary dark:bg-black flex items-center justify-center text-white">
                                             {displayName.charAt(0).toUpperCase()}
                                         </div>
                                     </button>
@@ -169,6 +160,63 @@ const AccountHome = ({userData}) => {
                         </div>
                     </div>
                 </div>
+               {showMobileMenu && (
+                    <div className="fixed inset-0 z-50 flex md:hidden">
+                        {/* Overlay */}
+                        <div
+                            className="fixed inset-0 bg-black bg-opacity-40"
+                            onClick={() => setShowMobileMenu(false)}
+                        ></div>
+                        {/* Slide-in menu */}
+                        <div className="relative w-4/5 max-w-xs h-full bg-white dark:bg-zinc-950 shadow-lg flex flex-col animate-slide-in-left">
+                            <div className="flex items-center justify-between px-4 py-4 border-b border-gray-200 dark:border-zinc-800">
+                                <h1 className="text-lg font-semibold text-gray-900 dark:text-secondary-dark">E-Commerce Admin</h1>
+                                <button
+                                    className="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+                                    onClick={() => setShowMobileMenu(false)}
+                                    aria-label="Close sidebar"
+                                >
+                                    <svg className="h-6 w-6 text-gray-700 dark:text-white" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <nav className="flex-1 overflow-y-auto py-4 px-2 space-y-2">
+                                {navItems.map((item) => (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => {
+                                            setActiveSection(item.id);
+                                            setShowMobileMenu(false);
+                                        }}
+                                        className={`${
+                                            activeSection === item.id
+                                                ? 'bg-primary text-white dark:bg-zinc-800 dark:text-primary-dark'
+                                                : 'text-gray-800 dark:text-secondary-dark hover:bg-gray-100 dark:hover:bg-zinc-900'
+                                        } flex items-center w-full px-3 py-3 rounded-lg text-base font-medium transition`}
+                                    >
+                                        <span className="mr-3">{renderNavIcon(item.icon)}</span>
+                                        {item.name}
+                                    </button>
+                                ))}
+                            </nav>
+                            <div className="border-t border-gray-200 dark:border-zinc-800 px-4 py-3 flex items-center">
+                                <div className="h-9 w-9 rounded-full bg-secondary flex items-center justify-center text-white font-medium text-lg">
+                                    {displayName.charAt(0).toUpperCase()}
+                                </div>
+                                <div className="ml-3">
+                                    <p className="text-sm font-medium text-gray-900 dark:text-white">{displayName}</p>
+                                    <button
+                                        onClick={signOutWithEmail}
+                                        className="text-xs font-medium text-primary hover:underline dark:text-primary-dark"
+                                    >
+                                        Sign out
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {(activeSection === "main") &&
                     <AccountMainArea userData={userData} displayName={displayName}
@@ -176,8 +224,8 @@ const AccountHome = ({userData}) => {
 
                 {(activeSection === "create") &&
                     <AccountInsert/>
-                }  {(activeSection === "update") &&
-                    <AccountUpdate/>}
+                } {(activeSection === "update") &&
+                <AccountUpdate/>}
 
                 {(activeSection === "delete") &&
                     <AccountDelete/>
