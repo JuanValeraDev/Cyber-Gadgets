@@ -155,31 +155,31 @@ export default function AccountDelete() {
 
 
                     {/* Product List Section */}
-                    {filteredProducts.length > 0 ? (
+                    {filteredProducts.length > 0 && !showModal ? (
                         <div className="mb-6 ">
                             <div className="block sm:hidden ">
                                 <div className="grid gap-4 " style={{maxHeight: '60vh', overflowY: 'auto'}}>
                                     {filteredProducts.map((product) => (
                                         <div key={product.id}
-                                             className="bg-white border border-gray-200 rounded-lg p-4 flex flex-col ">
+                                             className="bg-white border dark:bg-zinc-800 border-gray-200 rounded-lg p-4 flex flex-col ">
                                             <div className="flex items-center mb-2">
                                                 <img className="h-28 w-28 rounded-full object-cover" src={product.image}
                                                      alt={product.name}/>
                                                 <div className="ml-4 flex-1">
                                                     <div
-                                                        className="text-base font-medium text-gray-900">{product.name}</div>
+                                                        className="text-base font-medium text-gray-900 dark:text-white">{product.name}</div>
                                                     {product.isNew && <span
-                                                        className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">New</span>}
+                                                        className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-primary-dark dark:text-white">New</span>}
                                                 </div>
                                             </div>
-                                            <div className="text-sm text-gray-500 mb-1">Category: <span
-                                                className="text-gray-900">{product.category}</span></div>
-                                            <div className="text-sm text-gray-500 mb-1">Price: <span
-                                                className="text-gray-900">${product.price.toFixed(2)}</span></div>
-                                            <div className="text-sm text-gray-500 mb-2">Stock: <span
-                                                className="text-gray-900">{product.stock}</span></div>
+                                            <div className="text-sm text-gray-500 mb-1 dark:text-zinc-50">Category: <span
+                                                className="text-gray-900 dark:text-zinc-200">{product.category}</span></div>
+                                            <div className="text-sm text-gray-500 mb-1 dark:text-zinc-50">Price: <span
+                                                className="text-gray-900 dark:text-zinc-200">${product.price.toFixed(2)}</span></div>
+                                            <div className="text-sm text-gray-500 mb-2 dark:text-zinc-50">Stock: <span
+                                                className="text-gray-900 dark:text-zinc-200">{product.stock}</span></div>
                                             <button
-                                                className="text-white bg-terciary hover:bg-terciary-light px-3 py-1 rounded-md inline-flex items-center self-end"
+                                                className="text-white bg-terciary hover:bg-terciary-light dark:bg-primary-dark dark:text-white px-3 py-1 rounded-md inline-flex items-center self-end"
                                                 onClick={() => handleProductSelect(product, setSelectedProduct, setDropdownOpen, setShowModal)}
                                             >
                                                 <Trash2 size={16} className="mr-1"/>
