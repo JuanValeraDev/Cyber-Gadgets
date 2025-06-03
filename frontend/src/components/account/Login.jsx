@@ -62,11 +62,9 @@ const Login = () => {
 
     return (
         <div className="min-h-screen overflow-hidden relative">
-            {/* Background gradient with slight animation */}
-            <div className="fixed inset-0 bg-gradient-to-br from-primary/10 via-white to-secondary/10 z-0"></div>
 
 
-            {/* Custom cursor trail effect if we wanted to get fancy */}
+
             <style >{`
              
                 
@@ -82,9 +80,9 @@ const Login = () => {
 
             <div className="flex min-h-screen relative z-10">
                 {/* Left panel - Asymmetrical design with angled content */}
-                <div className="hidden lg:block lg:w-1/2 relative bg-white/30 backdrop-blur-lg overflow-hidden">
+                <div className="hidden lg:block lg:w-1/2 relative bg-zinc-100 dark:bg-black backdrop-blur-lg overflow-hidden">
                     <div
-                        className="absolute inset-0 bg-primary/90 transform -skew-x-6 origin-top-right"
+                        className="absolute inset-0 bg-primary dark:bg-zinc-900 transform -skew-x-6 origin-top-right"
                         style={{
                             transition: 'transform 0.6s ease-out'
                         }}
@@ -102,7 +100,7 @@ const Login = () => {
                                 Control<br/>
                                 <span className="text-6xl relative inline-block">
                                     Center
-                                    <span className="absolute -right-3 -top-3 h-6 w-6 rounded-full bg-secondary"></span>
+                                    <span className="absolute -right-3 -top-3 h-6 w-6 rounded-full bg-secondary dark:bg-primary-dark"></span>
                                 </span>
                             </h1>
 
@@ -148,21 +146,21 @@ const Login = () => {
                         className="w-full max-w-md"
 
                     >
-                        <div className="relative bg-white/80 backdrop-blur-md rounded-2xl shadow-lg p-8 overflow-hidden">
+                        <div className="relative  dark:bg-zinc-800 backdrop-blur-md rounded-2xl shadow-lg p-8 overflow-hidden">
                             {/* Decorative elements */}
-                            <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full bg-secondary/10"></div>
-                            <div className="absolute -bottom-16 -left-16 w-32 h-32 rounded-full bg-primary/10"></div>
+                            <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full bg-secondary/10 dark:bg-zinc-700"></div>
+                            <div className="absolute -bottom-16 -left-16 w-32 h-32 rounded-full bg-primary/10 dark:bg-zinc-700"></div>
 
                             <div className="relative z-10">
                                 <div className="flex justify-start mb-8">
-                                    <div className="w-16 h-4 bg-primary rounded-r-full"></div>
-                                    <div className="w-4 h-4 bg-secondary rounded-full -ml-2"></div>
+                                    <div className="w-16 h-4 bg-primary dark:bg-terciary-dark rounded-r-full"></div>
+                                    <div className="w-4 h-4 bg-secondary dark:bg-primary-dark rounded-full -ml-2"></div>
                                 </div>
 
-                                <h2 className="text-3xl font-bold text-gray-800 mb-1">
+                                <h2 className="text-3xl font-bold text-gray-800 mb-1 dark:text-primary-dark">
                                     {isLogin ? 'Welcome back' : 'Join us'}
                                 </h2>
-                                <p className="text-gray-600 mb-8">
+                                <p className="text-gray-600 mb-8 dark:text-zinc-400">
                                     {isLogin
                                         ? 'Access your admin workspace'
                                         : 'Create your administrator account'}
@@ -191,12 +189,12 @@ const Login = () => {
                                         <div
                                             className={`relative ${inputFocus === 'email' ? 'transform scale-105 transition-transform' : 'transition-transform'}`}
                                         >
-                                            <label htmlFor="email-address" className="block text-sm font-medium text-gray-700 mb-1">
+                                            <label htmlFor="email-address" className="block text-sm font-medium text-gray-700 mb-1 dark:text-primary-dark">
                                                 Email address
                                             </label>
                                             <div className="relative">
                                                 <div
-                                                    className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors duration-300 ${inputFocus === 'email' ? 'text-primary' : 'text-gray-400'}`}
+                                                    className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors duration-300 ${inputFocus === 'email' ? 'text-primary dark:text-primary-dark' : 'text-gray-400'}`}
                                                 >
                                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                                         <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
@@ -209,7 +207,7 @@ const Login = () => {
                                                     type="email"
                                                     autoComplete="email"
                                                     required
-                                                    className={`input-focus-effect block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${inputFocus === 'email' ? 'bg-primary/5' : 'bg-white'}`}
+                                                    className={`input-focus-effect block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-terciary-dark rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-zinc-700 focus:border-transparent ${inputFocus === 'email' ? 'bg-primary/5 dark:text-white dark:bg-zinc-600' : 'bg-white dark:bg-zinc-700'}`}
                                                     placeholder="hello@company.com"
                                                     value={email}
                                                     onChange={(e) => setEmail(e.target.value)}
@@ -227,12 +225,12 @@ const Login = () => {
                                         <div
                                             className={`relative ${inputFocus === 'password' ? 'transform scale-105 transition-transform' : 'transition-transform'}`}
                                         >
-                                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-primary-dark mb-1">
                                                 Password
                                             </label>
                                             <div className="relative">
                                                 <div
-                                                    className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors duration-300 ${inputFocus === 'password' ? 'text-primary' : 'text-gray-400'}`}
+                                                    className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors duration-300 ${inputFocus === 'password' ? 'text-primary dark:text-primary-dark' : 'text-gray-400'}`}
                                                 >
                                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                                         <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
@@ -244,7 +242,7 @@ const Login = () => {
                                                     type="password"
                                                     autoComplete="current-password"
                                                     required
-                                                    className={`input-focus-effect block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${inputFocus === 'password' ? 'bg-primary/5' : 'bg-white'}`}
+                                                    className={`input-focus-effect dark:border-terciary-dark  block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-zinc-700 focus:border-transparent ${inputFocus === 'password' ? 'bg-primary/5 dark:text-white dark:bg-zinc-600' : 'bg-white dark:bg-zinc-700'}`}
                                                     placeholder="••••••••"
                                                     value={password}
                                                     onChange={(e) => setPassword(e.target.value)}
@@ -269,11 +267,10 @@ const Login = () => {
                                         <button
                                             type="submit"
                                             disabled={isLoading}
-                                            className="relative w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-xl text-white bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-200 overflow-hidden"
+                                            className="relative w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-xl text-white bg-primary dark:bg-primary-dark hover:bg-primary/90 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-200 overflow-hidden"
                                         >
                                             {/* Background animation */}
                                             <div className="absolute inset-0 overflow-hidden">
-                                                <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-primary opacity-70"></div>
                                             </div>
 
                                             <span className="relative flex items-center">
@@ -311,7 +308,7 @@ const Login = () => {
                                     <div className="mt-6">
                                         <button
                                             type="button"
-                                            className="group w-full flex justify-center py-3 px-4 border border-gray-300 rounded-xl bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition-all duration-200"
+                                            className="group w-full flex justify-center py-3 px-4 border border-gray-300 rounded-xl bg-white text-sm font-medium  dark:bg-zinc-600  dark:text-zinc-100 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition-all duration-200"
                                             onClick={() => setIsLogin(!isLogin)}
                                         >
                                             <span className="relative inline-flex items-center group-hover:underline">

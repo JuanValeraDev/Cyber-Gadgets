@@ -22,7 +22,7 @@ It uses fake products inspired by a futuristic and sci-fi vision.
 
 1. Clone the repository
 ```bash
-git clone https://github.com/JuanValeraDev/JV-Shop
+git clone https://github.com/JuanValeraDev/Cyber-Gadgets
 cd jv-shop
 ```
 

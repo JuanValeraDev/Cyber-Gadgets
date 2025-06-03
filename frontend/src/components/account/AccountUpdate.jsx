@@ -147,7 +147,7 @@ export default function AccountUpdate() {
     return (<>
             {!showModal &&
                 <div
-                    className="bg-white rounded-lg shadow-lg px-20 py-14 max-w-full mx-auto mt-6 mb-6 dark:bg-zinc-700 dark:border-2 dark:border-terciary-dark ">
+                    className="bg-white rounded-lg shadow-lg sm:px-4 px-4 sm:py-8 py-4 max-w-full mx-auto mt-6 mb-6 dark:bg-zinc-700 dark:border-2 dark:border-terciary-dark ">
                     <div className="flex justify-between items-center mb-6">
                         {showSuccess && (
                             <div className="bg-green-100 text-green-700 px-4 py-2 rounded-md flex items-center">
@@ -229,7 +229,7 @@ export default function AccountUpdate() {
                                 <div className="grid gap-4 " style={{maxHeight: '60vh', overflowY: 'auto'}}>
                                     {filteredProducts.map((product) => (
                                         <div key={product.id}
-                                             className="bg-white border dark:bg-zinc-800 border-gray-200 rounded-lg p-4 flex flex-col ">
+                                             className="bg-white border dark:bg-zinc-800 border-gray-200 dark:border-zinc-500  rounded-lg p-4 flex flex-col ">
                                             <div className="flex items-center mb-2">
                                                 <img className="h-28 w-28 rounded-full object-cover" src={product.image}
                                                      alt={product.name}/>
