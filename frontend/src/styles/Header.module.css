@@ -3,11 +3,11 @@
 }
 
 .nav {
-  @apply container mx-auto px-4 py-4 flex items-center gap-8 justify-between ps-10 pe-10;
+  @apply container mx-auto px-4 py-2 flex items-center gap-8 justify-between ps-10 pe-10;
 }
 
 .logo {
-  @apply text-4xl font-bold text-primary  hover:text-secondary
+  @apply  font-bold text-primary  hover:text-secondary
           transition-colors duration-200;
 }
 

@@ -115,7 +115,9 @@ export default function Catalog({selectedCategory, onOpenChatbot, isOpen, onSear
                 }
                 <ProductList products={filteredProducts}/>
             </section>
-            <Chatbot onOpenChatbot={onOpenChatbot} isOpen={isOpen}/>
+
+            {/*Lo comento porque estoy teniendo problemas con el límite de tokens de la api de Gemini*/}
+              <Chatbot onOpenChatbot={onOpenChatbot} isOpen={isOpen}/>
         </main>
     );
 }

@@ -9,6 +9,7 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
     ]);
     const [inputValue, setInputValue] = useState("");
     const [isMobile, setIsMobile] = useState(false);
+    const [isMobileLandscape, setIsMobileLandscape] = useState(false);
     const [isRendered, setIsRendered] = useState(false);
     const chatEndRef = useRef(null);
 
@@ -44,18 +45,27 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
 
 
     useEffect(() => {
-        const checkIfMobile = () => {
-            setIsMobile(window.innerWidth < 768);
+        const checkDeviceOrientation = () => {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const isMobileDevice = width <= 768;
+            const isLandscape = width > height;
+
+            setIsMobile(isMobileDevice);
+            setIsMobileLandscape(isMobileDevice && isLandscape);
         };
 
+        checkDeviceOrientation();
 
-        checkIfMobile();
-
-        // Add event listener
-        window.addEventListener('resize', checkIfMobile);
+        // Add event listeners
+        window.addEventListener('resize', checkDeviceOrientation);
+        window.addEventListener('orientationchange', checkDeviceOrientation);
 
         // Cleanup
-        return () => window.removeEventListener('resize', checkIfMobile);
+        return () => {
+            window.removeEventListener('resize', checkDeviceOrientation);
+            window.removeEventListener('orientationchange', checkDeviceOrientation);
+        };
     }, []);
 
     // Auto-scroll to bottom when messages change
@@ -98,17 +108,43 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
         onOpenChatbot(!isOpen);
     };
 
+    // Diferentes estilos según la orientación y dispositivo
+    const getChatWindowStyles = () => {
+        if (isMobileLandscape) {
+            // Landscape móvil: ventana más pequeña y compacta
+            return "fixed z-50 bg-white dark:bg-zinc-800 border dark:border-zinc-700 h-[60%] bottom-2 right-2 w-[50%] max-w-md";
+        } else if (isMobile) {
+            // Portrait móvil: pantalla completa
+            return "fixed z-50 bg-white dark:bg-zinc-800 border dark:border-zinc-700 h-[80%] bottom-2 left-2 right-2";
+        } else {
+            // Desktop: ventana normal
+            return "fixed z-50 bottom-6 right-4 bg-white dark:bg-zinc-800 border dark:border-zinc-700 w-96 h-96 origin-bottom-right";
+        }
+    };
+
+    const getMessagesHeight = () => {
+        if (isMobileLandscape) {
+            return 'calc(100% - 90px)'; // Más compacto en landscape
+        } else if (isMobile) {
+            return 'calc(100% - 130px)';
+        } else {
+            return 'calc(100% - 110px)';
+        }
+    };
+
     return (
-        <div className="fixed bottom-6 right-6 z-50 ">
+        <div className={`fixed z-50 ${isMobileLandscape ? 'bottom-2 right-2' : 'bottom-6 right-6'}`}>
             {/* Collapsed chat button - always visible when chat is closed */}
             {!isOpen && (
                 <button
                     onClick={toggleChat}
-                    className="bg-primary hover:bg-secondary text-white dark:bg-primary-dark dark:hover:bg-terciary-dark rounded-full p-4 shadow-lg flex items-center justify-center transition-all duration-300 ease-in-out hover:scale-110"
+                    className={`bg-primary hover:bg-secondary text-white dark:bg-primary-dark dark:hover:bg-terciary-dark rounded-full shadow-lg flex items-center justify-center transition-all duration-300 ease-in-out hover:scale-110 ${
+                        isMobileLandscape ? 'p-2' : 'p-4'
+                    }`}
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6"
+                        className={`${isMobileLandscape ? 'h-4 w-4' : 'h-6 w-6'}`}
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -126,11 +162,7 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
             {/* Expanded chat window */}
             {isRendered && (
                 <div
-                    className={`fixed z-50 transition-all duration-700 ease-out rounded-lg ${
-                        isMobile
-                            ? " bg-white dark:bg-zinc-800 border dark:border-zinc-700 h-[80%] bottom-2 left-2 right-2"
-                            : "bottom-6 right-4 bg-white dark:bg-zinc-800 border dark:border-zinc-700  w-96 h-96 origin-bottom-right"
-                    } ${
+                    className={`${getChatWindowStyles()} transition-all duration-700 ease-out rounded-lg ${
                         isOpen
                             ? isMobile
                                 ? "opacity-100 translate-y-0"
@@ -142,22 +174,24 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
                 >
                     {/* Chat header */}
                     <div
-                        className={`px-4 py-3 bg-primary text-white dark:bg-primary-dark flex justify-between items-center rounded-t-lg transition-all duration-700`}
+                        className={`bg-primary text-white dark:bg-primary-dark flex justify-between items-center rounded-t-lg transition-all duration-700 ${
+                            isMobileLandscape ? 'px-3 py-1' : 'px-4 py-3'
+                        }`}
                         style={{
                             opacity: isOpen ? 1 : 0,
                             transform: `translateY(${isOpen ? '0' : '-10px'})`,
                             transitionDelay: isOpen ? '300ms' : '0ms'
                         }}
                     >
-                        <h2 className="font-semibold">AI Assistant</h2>
+                        <h2 className={`font-semibold ${isMobileLandscape ? 'text-sm' : ''}`}>AI Assistant</h2>
                         <button
                             onClick={toggleChat}
-                            className="text-white focus:outline-none transition-transform duration-300 "
+                            className="text-white focus:outline-none transition-transform duration-300"
                             aria-label="Close chat"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
+                                className={`${isMobileLandscape ? 'h-4 w-4' : 'h-5 w-5'}`}
                                 viewBox="0 0 20 20"
                                 fill="currentColor"
                             >
@@ -172,20 +206,26 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
 
                     {/* Chat messages */}
                     <div
-                        className="flex-1 p-4 overflow-y-auto bg-gray-50 dark:bg-zinc-800 transition-all duration-500"
+                        className={`flex-1 overflow-y-auto bg-gray-50 dark:bg-zinc-800 transition-all duration-500 ${
+                            isMobileLandscape ? 'p-2' : 'p-4'
+                        }`}
                         style={{
-                            height: isMobile ? 'calc(100% - 130px)' : 'calc(100% - 110px)',
+                            height: getMessagesHeight(),
                             transitionDelay: isOpen ? '200ms' : '0ms'
                         }}
                     >
                         {messages.map((message, index) => (
                             <div
                                 key={message.id}
-                                className={`mb-3 transition-all duration-500 ${
+                                className={`transition-all duration-500 ${
                                     message.sender === "user"
                                         ? "ml-auto bg-zinc-500 text-white"
                                         : "mr-auto bg-zinc-300 text-gray-800"
-                                } px-4 py-2 rounded-lg max-w-xs ${isMobile ? "md:max-w-md" : ""}`}
+                                } rounded-lg max-w-xs ${
+                                    isMobileLandscape
+                                        ? "mb-1 px-2 py-1 text-sm max-w-[200px]"
+                                        : "mb-3 px-4 py-2"
+                                } ${isMobile && !isMobileLandscape ? "md:max-w-md" : ""}`}
                                 style={{
                                     transitionDelay: isOpen ? `${100 + (index * 100)}ms` : '0ms',
                                     opacity: isOpen ? 1 : 0,
@@ -201,7 +241,9 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
                     {/* Chat input */}
                     <form
                         onSubmit={handleSubmit}
-                        className="p-3 border-t dark:border-zinc-700 flex absolute bottom-0 left-0 right-0 transition-all duration-500"
+                        className={`border-t dark:border-zinc-700 flex absolute bottom-0 left-0 right-0 transition-all duration-500 ${
+                            isMobileLandscape ? 'p-2' : 'p-3'
+                        }`}
                         style={{
                             transitionDelay: isOpen ? '400ms' : '0ms',
                             opacity: isOpen ? 1 : 0,
@@ -213,11 +255,15 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
                             placeholder="Type your message..."
-                            className="flex-1 px-3 py-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-zinc-700 dark:border-zinc-600 dark:text-white transition-all duration-300"
+                            className={`flex-1 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-zinc-700 dark:border-zinc-600 dark:text-white transition-all duration-300 ${
+                                isMobileLandscape ? 'px-2 py-1 text-sm' : 'px-3 py-2'
+                            }`}
                         />
                         <button
                             type="submit"
-                            className="bg-primary text-white px-4 py-2 rounded-r-lg hover:bg-secondary dark:bg-primary-dark dark:text-white dark:hover:bg-terciary-dark focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 hover:shadow-lg"
+                            className={`bg-primary text-white rounded-r-lg hover:bg-secondary dark:bg-primary-dark dark:text-white dark:hover:bg-terciary-dark focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 hover:shadow-lg ${
+                                isMobileLandscape ? 'px-3 py-1 text-sm' : 'px-4 py-2'
+                            }`}
                         >
                             Send
                         </button>

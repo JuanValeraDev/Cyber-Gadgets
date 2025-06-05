@@ -1,4 +1,4 @@
-import { useState} from 'react'
+import { useState, useEffect } from 'react'
 import {useLocation} from 'react-router-dom'
 import styles from '../styles/Header.module.css'
 import {
@@ -24,6 +24,7 @@ export default function Header({selectedCategory, onCategoryChange, onOpenChatbo
 
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isMobile, setIsMobile] = useState(false)
+    const [isMobileLandscape, setIsMobileLandscape] = useState(false)
     const location = useLocation()
 
     // Handle button click
@@ -42,15 +43,37 @@ export default function Header({selectedCategory, onCategoryChange, onOpenChatbo
 
     useFetchIsMobile(setIsMobile)
 
+    // Check for mobile landscape orientation
+    useEffect(() => {
+        const checkMobileLandscape = () => {
+            const width = window.innerWidth
+            const height = window.innerHeight
+            const isMobileDevice = width <= 1000 // Mobile breakpoint
+            const isLandscape = width > height
+
+            setIsMobileLandscape(isMobileDevice && isLandscape)
+        }
+
+        checkMobileLandscape()
+
+        window.addEventListener('resize', checkMobileLandscape)
+        window.addEventListener('orientationchange', checkMobileLandscape)
+
+        return () => {
+            window.removeEventListener('resize', checkMobileLandscape)
+            window.removeEventListener('orientationchange', checkMobileLandscape)
+        }
+    }, [])
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen)
     }
 
     const navigate = useNavigate();
+
     return (
-        <header className={`${styles.header} dark:bg-black`}>
-            <nav className={styles.nav}>
+        <header className={`${styles.header} dark:bg-black ${isMobileLandscape ? 'py-1' : ''}`}>
+            <nav className={`${styles.nav} ${isMobileLandscape ? 'min-h-0 py-1' : ''}`}>
                 <button onClick={() => {
                     setIsCartOpen(false)
                     onCategoryChange("All")
@@ -60,7 +83,7 @@ export default function Header({selectedCategory, onCategoryChange, onOpenChatbo
                     navigate("/")
                 }
                 }>
-                    <img src="/images/logo-2.png" alt="logo" className="logo w-44"/>
+                    <img src="/images/logo-2.png" alt="logo" className={`logo   ${isMobileLandscape ? 'w-20 h-auto' : 'w-40'}`}/>
                 </button>
 
 
@@ -69,20 +92,20 @@ export default function Header({selectedCategory, onCategoryChange, onOpenChatbo
                         {/* Show hamburger toggle button */}
                         <button
                             onClick={toggleMobileMenu}
-                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 ml-2"
+                            className={`${isMobileLandscape ? 'p-1' : 'p-2'} rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 ml-2`}
                             aria-label="Toggle menu"
                         >
                             {isMobileMenuOpen ? (
-                                <XMarkIcon className="h-6 w-6 text-gray-600 dark:text-gray-300"/>
+                                <XMarkIcon className={`${isMobileLandscape ? 'h-4 w-4' : 'h-6 w-6'} text-gray-600 dark:text-gray-300`}/>
                             ) : (
-                                <Bars3Icon className="h-6 w-6 text-gray-600 dark:text-gray-300"/>
+                                <Bars3Icon className={`${isMobileLandscape ? 'h-4 w-4' : 'h-6 w-6'} text-gray-600 dark:text-gray-300`}/>
                             )}
                         </button>
 
                         {/* Display cart count indicator on mobile */}
                         {cartItemsCount > 0 && (
                             <span
-                                className="absolute bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center ml-8 -mt-6">
+                                className={`absolute bg-red-500 text-white text-xs rounded-full flex items-center justify-center ml-8 ${isMobileLandscape ? 'h-4 w-4 -mt-4 text-xs' : 'h-5 w-5 -mt-6'}`}>
                                 {cartItemsCount}
                             </span>
                         )}
@@ -92,42 +115,41 @@ export default function Header({selectedCategory, onCategoryChange, onOpenChatbo
 
                         <button hidden={location.pathname === "/account" || location.pathname === "/login"}
                                 onClick={() => setIsCartOpen(true)}
-                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 relative"
+                                className={`${isMobileLandscape ? 'p-1' : 'p-2'} rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 relative`}
                                 aria-label="Shopping cart"
                         >
-                            <ShoppingCartIcon className="h-6 w-6 text-gray-600 dark:text-gray-300"/>
+                            <ShoppingCartIcon className={`${isMobileLandscape ? 'h-4 w-4' : 'h-6 w-6'} text-gray-600 dark:text-gray-300`}/>
                             {cartItemsCount > 0 && (
-                                <span className="absolute -top-1 -right-1 s-500 text-white text-xs
-                                bg-red-500 rounded-full h-5 w-5 flex items-center justify-center">
+                                <span className={`absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full flex items-center justify-center ${isMobileLandscape ? 'h-4 w-4' : 'h-5 w-5'}`}>
                                     {cartItemsCount}
                                 </span>
                             )}
                         </button>
                         <button hidden={location.pathname === "/account" || location.pathname === "/login"}
                                 onClick={() => handleAccountButtonClick()}
-                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                                className={`${isMobileLandscape ? 'p-1' : 'p-2'} rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700`}
                                 aria-label="Account"
                         >
-                            <UserIcon className="h-6 w-6 text-gray-600 dark:text-gray-300"/>
+                            <UserIcon className={`${isMobileLandscape ? 'h-4 w-4' : 'h-6 w-6'} text-gray-600 dark:text-gray-300`}/>
                         </button>
                         <button hidden={location.pathname === "/"}
                                 onClick={() => handleStoreButtonClick()}
-                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                                className={`${isMobileLandscape ? 'p-1' : 'p-2'} rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700`}
                                 aria-label="Home"
                         >
-                            <BuildingStorefrontIcon className="h-6 w-6 text-gray-600 dark:text-gray-300"/>
+                            <BuildingStorefrontIcon className={`${isMobileLandscape ? 'h-4 w-4' : 'h-6 w-6'} text-gray-600 dark:text-gray-300`}/>
                         </button>
 
 
                         <button
                             onClick={toggleTheme}
-                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                            className={`${isMobileLandscape ? 'p-1' : 'p-2'} rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700`}
                             aria-label="Toggle theme"
                         >
                             {isDarkMode ? (
-                                <SunIcon className="h-6 w-6 text-gray-300"/>
+                                <SunIcon className={`${isMobileLandscape ? 'h-4 w-4' : 'h-6 w-6'} text-gray-300`}/>
                             ) : (
-                                <MoonIcon className="h-6 w-6 text-gray-600"/>
+                                <MoonIcon className={`${isMobileLandscape ? 'h-4 w-4' : 'h-6 w-6'} text-gray-600`}/>
                             )}
                         </button>
                     </div>
@@ -159,15 +181,15 @@ export default function Header({selectedCategory, onCategoryChange, onOpenChatbo
                             )}
                         </button>
                         {location.pathname === "/" &&
-                        <button
+                            <button
                                 onClick={() => handleAccountButtonClick()}
                                 className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600"
                                 aria-label="Account"
-                        >
-                            <UserIcon className="h-6 w-6 text-gray-600 dark:text-gray-300"/>
-                            <span className="text-gray-700 dark:text-gray-200">Account</span>
+                            >
+                                <UserIcon className="h-6 w-6 text-gray-600 dark:text-gray-300"/>
+                                <span className="text-gray-700 dark:text-gray-200">Account</span>
 
-                        </button>
+                            </button>
                         }
                         {location.pathname !== "/" && (
                             <button
@@ -204,15 +226,15 @@ export default function Header({selectedCategory, onCategoryChange, onOpenChatbo
             )}
 
             <div className={`${styles.categories} dark:border-gray-700`}
-                 hidden={location.pathname === "/account" || location.pathname === "/login"}>
+                 hidden={location.pathname === "/account" || location.pathname === "/login" || isMobileLandscape}>
 
                 {
                     categories.categories.map((category) => (
-                    <button key={category} onClick={() => {
-                        onCategoryChange(category)
-                    }}
-                            className={`${styles.category} dark:text-secondary-dark dark:hover:text-primary-dark  px-2 ${selectedCategory === category ? " dark:bg-zinc-800 rounded-md bg-gray-200 text-primary dark:text-primary-dark" : ""}` }>{category}</button>
-                ))}
+                        <button key={category} onClick={() => {
+                            onCategoryChange(category)
+                        }}
+                                className={`${styles.category} dark:text-secondary-dark dark:hover:text-primary-dark  px-2 ${selectedCategory === category ? " dark:bg-zinc-800 rounded-md bg-gray-200 text-primary dark:text-primary-dark" : ""}` }>{category}</button>
+                    ))}
             </div>
 
             <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)}/>

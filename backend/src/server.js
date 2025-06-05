@@ -82,7 +82,7 @@ app.get('/response', async (req, res) => {
             sender: "bot"
         });
     } catch (error) {
-        res.status(500).json({error: "Failed to generate AI response."});
+        res.status(500).json({error: "Failed to generate AI response."+error});
     }
 });
 
