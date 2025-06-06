@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {createClient} from "@supabase/supabase-js";
 
+
 export function useProductState() {
     const [products, setProducts] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -23,8 +24,6 @@ export function useProductState() {
 }
 
 
-
-
 export function handleProductSelect(product, setSelectedProduct, setDropdownOpen, setShowModal) {
     console.log("En handleProductSelect")
     setSelectedProduct(product);
@@ -34,15 +33,16 @@ export function handleProductSelect(product, setSelectedProduct, setDropdownOpen
 }
 
 
-// eslint-disable-next-line no-undef
-export const API_URL = process.env.NODE_ENV === 'production' ? 'https://cyber-gadgets.onrender.com' : 'http://localhost:5000';
+export const API_URL = import.meta.env.MODE === 'production'
+    ? 'https://cyber-gadgets.onrender.com'
+    : 'http://localhost:5000';
 
-export const supabase = createClient(
-    "https://plywzkndxxlnuivlqige.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBseXd6a25keHhsbnVpdmxxaWdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUwNzM0NDIsImV4cCI6MjA2MDY0OTQ0Mn0.RllzUJ6nWn4RrAVMEvud1huuN6G8eRxtBOokB-njTgI"
-);
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-export function useFetchProducts(API_URL, setProducts,showModal) {
+export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+export function useFetchProducts(API_URL, setProducts, showModal) {
     useEffect(() => {
         async function fetchProducts() {
             try {
@@ -55,7 +55,7 @@ export function useFetchProducts(API_URL, setProducts,showModal) {
         }
 
         fetchProducts();
-    }, [API_URL, setProducts,showModal]);
+    }, [API_URL, setProducts, showModal]);
 }
 
 export function useFetchIsMobile(setIsMobile) {
