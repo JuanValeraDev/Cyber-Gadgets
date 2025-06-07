@@ -1,11 +1,7 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import {  createClient } from "@supabase/supabase-js";
+import {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 
-const supabase = createClient(
-    "https://plywzkndxxlnuivlqige.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBseXd6a25keHhsbnVpdmxxaWdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUwNzM0NDIsImV4cCI6MjA2MDY0OTQ0Mn0.RllzUJ6nWn4RrAVMEvud1huuN6G8eRxtBOokB-njTgI"
-);
+import {supabase} from '../../hooks/Hooks.jsx'
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -17,17 +13,16 @@ const Login = () => {
     const navigate = useNavigate();
 
 
-
     async function signInWithEmail() {
         setIsLoading(true);
         try {
-            const { data, error } = await supabase.auth.signInWithPassword({
+            const {data, error} = await supabase.auth.signInWithPassword({
                 email: email,
                 password: password,
             });
 
             if (!error) {
-                navigate("/account", { state: { userData: data } });
+                navigate("/account", {state: {userData: data}});
             } else {
                 setError(error);
             }
@@ -41,13 +36,13 @@ const Login = () => {
     async function signUpNewUser() {
         setIsLoading(true);
         try {
-            const { data, error } = await supabase.auth.signUp({
+            const {data, error} = await supabase.auth.signUp({
                 email: email,
                 password: password,
             });
 
             if (!error) {
-                navigate("/account", { state: { userData: data } });
+                navigate("/account", {state: {userData: data}});
             } else {
                 setError(error);
             }
@@ -59,19 +54,12 @@ const Login = () => {
     }
 
 
-
     return (
         <div className="min-h-screen overflow-hidden relative">
-
-
-
-            <style >{`
-             
-                
+            <style>{`
                 .input-focus-effect {
                     transition: all 0.3s ease;
                 }
-                
                 .password-strength-0 { background: linear-gradient(90deg, #ff4d4d 0%, #ededed 0%); }
                 .password-strength-1 { background: linear-gradient(90deg, #ff4d4d 33%, #ededed 33%); }
                 .password-strength-2 { background: linear-gradient(90deg, #ffba49 67%, #ededed 67%); }
@@ -80,7 +68,8 @@ const Login = () => {
 
             <div className="flex min-h-screen relative z-10">
                 {/* Left panel - Asymmetrical design with angled content */}
-                <div className="hidden lg:block lg:w-1/2 relative bg-zinc-100 dark:bg-black backdrop-blur-lg overflow-hidden">
+                <div
+                    className="hidden lg:block lg:w-1/2 relative bg-zinc-100 dark:bg-black backdrop-blur-lg overflow-hidden">
                     <div
                         className="absolute inset-0 bg-primary dark:bg-zinc-900 transform -skew-x-6 origin-top-right"
                         style={{
@@ -100,7 +89,8 @@ const Login = () => {
                                 Control<br/>
                                 <span className="text-6xl relative inline-block">
                                     Center
-                                    <span className="absolute -right-3 -top-3 h-6 w-6 rounded-full bg-secondary dark:bg-primary-dark"></span>
+                                    <span
+                                        className="absolute -right-3 -top-3 h-6 w-6 rounded-full bg-secondary dark:bg-primary-dark"></span>
                                 </span>
                             </h1>
 
@@ -110,27 +100,37 @@ const Login = () => {
 
                             <div className="mt-12 space-y-4">
                                 <div className="flex items-center opacity-80 hover:opacity-100 transition-opacity">
-                                    <div className="h-10 w-10 rounded-lg bg-white/20 flex items-center justify-center mr-4">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fillRule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clipRule="evenodd" />
+                                    <div
+                                        className="h-10 w-10 rounded-lg bg-white/20 flex items-center justify-center mr-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20"
+                                             fill="currentColor">
+                                            <path fillRule="evenodd"
+                                                  d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"
+                                                  clipRule="evenodd"/>
                                         </svg>
                                     </div>
                                     <p className="text-sm">Product management with real-time inventory</p>
                                 </div>
 
                                 <div className="flex items-center opacity-80 hover:opacity-100 transition-opacity">
-                                    <div className="h-10 w-10 rounded-lg bg-white/20 flex items-center justify-center mr-4">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                            <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+                                    <div
+                                        className="h-10 w-10 rounded-lg bg-white/20 flex items-center justify-center mr-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20"
+                                             fill="currentColor">
+                                            <path
+                                                d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
                                         </svg>
                                     </div>
                                     <p className="text-sm">Advanced analytics and trend forecasting</p>
                                 </div>
 
                                 <div className="flex items-center opacity-80 hover:opacity-100 transition-opacity">
-                                    <div className="h-10 w-10 rounded-lg bg-white/20 flex items-center justify-center mr-4">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                                    <div
+                                        className="h-10 w-10 rounded-lg bg-white/20 flex items-center justify-center mr-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20"
+                                             fill="currentColor">
+                                            <path
+                                                d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
                                         </svg>
                                     </div>
                                     <p className="text-sm">Comprehensive customer data and insights</p>
@@ -146,10 +146,13 @@ const Login = () => {
                         className="w-full max-w-md"
 
                     >
-                        <div className="relative  dark:bg-zinc-800 backdrop-blur-md rounded-2xl shadow-lg p-8 overflow-hidden">
+                        <div
+                            className="relative  dark:bg-zinc-800 backdrop-blur-md rounded-2xl shadow-lg p-8 overflow-hidden">
                             {/* Decorative elements */}
-                            <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full bg-secondary/10 dark:bg-zinc-700"></div>
-                            <div className="absolute -bottom-16 -left-16 w-32 h-32 rounded-full bg-primary/10 dark:bg-zinc-700"></div>
+                            <div
+                                className="absolute -top-24 -right-24 w-48 h-48 rounded-full bg-secondary/10 dark:bg-zinc-700"></div>
+                            <div
+                                className="absolute -bottom-16 -left-16 w-32 h-32 rounded-full bg-primary/10 dark:bg-zinc-700"></div>
 
                             <div className="relative z-10">
                                 <div className="flex justify-start mb-8">
@@ -167,10 +170,15 @@ const Login = () => {
                                 </p>
 
                                 {error && (
-                                    <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-md animate-slide-in">
+                                    <div
+                                        className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-md animate-slide-in">
                                         <div className="flex">
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-500 mr-3" viewBox="0 0 20 20" fill="currentColor">
-                                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 className="h-5 w-5 text-red-500 mr-3" viewBox="0 0 20 20"
+                                                 fill="currentColor">
+                                                <path fillRule="evenodd"
+                                                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                                      clipRule="evenodd"/>
                                             </svg>
                                             <p className="text-sm text-red-600">{error.message}</p>
                                         </div>
@@ -189,16 +197,20 @@ const Login = () => {
                                         <div
                                             className={`relative ${inputFocus === 'email' ? 'transform scale-105 transition-transform' : 'transition-transform'}`}
                                         >
-                                            <label htmlFor="email-address" className="block text-sm font-medium text-gray-700 mb-1 dark:text-primary-dark">
+                                            <label htmlFor="email-address"
+                                                   className="block text-sm font-medium text-gray-700 mb-1 dark:text-primary-dark">
                                                 Email address
                                             </label>
                                             <div className="relative">
                                                 <div
                                                     className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors duration-300 ${inputFocus === 'email' ? 'text-primary dark:text-primary-dark' : 'text-gray-400'}`}
                                                 >
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5"
+                                                         viewBox="0 0 20 20" fill="currentColor">
+                                                        <path
+                                                            d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                                                        <path
+                                                            d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
                                                     </svg>
                                                 </div>
                                                 <input
@@ -215,7 +227,8 @@ const Login = () => {
                                                     onBlur={() => setInputFocus(null)}
                                                 />
                                                 {email && (
-                                                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                    <div
+                                                        className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                                                         <div className="h-2 w-2 rounded-full bg-green-500"></div>
                                                     </div>
                                                 )}
@@ -225,15 +238,19 @@ const Login = () => {
                                         <div
                                             className={`relative ${inputFocus === 'password' ? 'transform scale-105 transition-transform' : 'transition-transform'}`}
                                         >
-                                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-primary-dark mb-1">
+                                            <label htmlFor="password"
+                                                   className="block text-sm font-medium text-gray-700 dark:text-primary-dark mb-1">
                                                 Password
                                             </label>
                                             <div className="relative">
                                                 <div
                                                     className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors duration-300 ${inputFocus === 'password' ? 'text-primary dark:text-primary-dark' : 'text-gray-400'}`}
                                                 >
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                                        <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5"
+                                                         viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fillRule="evenodd"
+                                                              d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                                              clipRule="evenodd"/>
                                                     </svg>
                                                 </div>
                                                 <input
@@ -275,13 +292,20 @@ const Login = () => {
 
                                             <span className="relative flex items-center">
                                                 {isLoading ? (
-                                                    <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                                                         xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                         viewBox="0 0 24 24">
+                                                        <circle className="opacity-25" cx="12" cy="12" r="10"
+                                                                stroke="currentColor" strokeWidth="4"></circle>
+                                                        <path className="opacity-75" fill="currentColor"
+                                                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                                     </svg>
                                                 ) : (
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clipRule="evenodd" />
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2"
+                                                         viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fillRule="evenodd"
+                                                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z"
+                                                              clipRule="evenodd"/>
                                                     </svg>
                                                 )}
                                                 {isLogin ? 'Enter Dashboard' : 'Create Account'}
@@ -294,10 +318,15 @@ const Login = () => {
                                     <div className="relative flex items-center">
                                         <div className="flex-grow border-t border-gray-300"></div>
                                         <div className="relative px-4">
-                                            <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                                <div className="h-8 w-8 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-400">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                                            <div
+                                                className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                                <div
+                                                    className="h-8 w-8 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-400">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4"
+                                                         viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fillRule="evenodd"
+                                                              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                                              clipRule="evenodd"/>
                                                     </svg>
                                                 </div>
                                             </div>
@@ -313,8 +342,12 @@ const Login = () => {
                                         >
                                             <span className="relative inline-flex items-center group-hover:underline">
                                                 {isLogin ? 'Need an account? Create one' : 'Already have an account? Sign in'}
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform"
+                                                     viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fillRule="evenodd"
+                                                          d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                                                          clipRule="evenodd"/>
                                                 </svg>
                                             </span>
                                         </button>
@@ -325,7 +358,7 @@ const Login = () => {
 
                         <div className="text-center mt-8">
                             <p className="text-xs text-gray-500 italic">
-                                 Administrative access only
+                                Administrative access only
                             </p>
                         </div>
                     </div>

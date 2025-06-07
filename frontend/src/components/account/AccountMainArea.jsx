@@ -107,8 +107,9 @@ export const AccountMainArea = ({userData, displayName, signOutWithEmail, setAct
                         Overview</h3>
                     <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
                         {mainAreaCards.map((card) => (
-                            <div key={card.title}
-                                 className="bg-white overflow-hidden shadow rounded-lg dark:bg-terciary-dark ">
+                            <div onClick={() => handleMainCardsClick(card)}
+                                key={card.title}
+                                 className="bg-white overflow-hidden shadow rounded-lg dark:bg-terciary-dark hover:cursor-pointer">
                                 <div className="p-4">
                                     <div className="flex items-center">
                                         <div
@@ -128,7 +129,7 @@ export const AccountMainArea = ({userData, displayName, signOutWithEmail, setAct
                                 </div>
                                 <div className="bg-gray-50 px-5 py-3 dark:bg-zinc-900 justify-center ">
                                     <div className="text-sm inline-block w-full text-end">
-                                        <button onClick={() => handleMainCardsClick(card)}
+                                        <button
                                                 className=" font-medium text-secondary hover:text-primary dark:text-primary-dark dark:border-2 dark:border-primary-dark p-2 rounded-md">
                                             Open
                                         </button>
