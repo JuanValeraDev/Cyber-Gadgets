@@ -1,6 +1,6 @@
 import {XMarkIcon, CheckCircleIcon} from '@heroicons/react/24/outline';
-import {useCart} from '../context/CartContext';
-import styles from '../styles/CartSidebar.module.css';
+import {useCart} from '../../context/CartContext.jsx';
+import styles from '../../styles/CartSidebar.module.css';
 import {useState} from 'react';
 
 // Checkout Success Modal Component

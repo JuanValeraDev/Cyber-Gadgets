@@ -1,5 +1,5 @@
-import { useCart } from '../context/CartContext';
-import styles from '../styles/ProductCard.module.css';
+import { useCart } from '../../context/CartContext.jsx';
+import styles from '../../styles/ProductCard.module.css';
 
 
 export default function ProductCard({ product }) {

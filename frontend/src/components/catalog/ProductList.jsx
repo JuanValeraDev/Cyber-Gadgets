@@ -1,4 +1,4 @@
-import ProductCard from './ProductCard';
+import ProductCard from './ProductCard.jsx';
 
 export default function ProductList({products}) {
     const shuffledProducts = [...products].sort(() => Math.random() - 0.5);

@@ -1,9 +1,9 @@
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import {BrowserRouter as Router, Navigate, Route, Routes} from 'react-router-dom';
 import {ThemeProvider} from './context/ThemeContext';
 import {CartProvider} from './context/CartContext';
-import Catalog from "./components/Catalog.jsx";
-import Header from './components/Header';
-import Footer from "./components/Footer.jsx";
+import Catalog from "./components/catalog/Catalog.jsx";
+import Header from './components/catalog/Header.jsx';
+import Footer from "./components/catalog/Footer.jsx";
 import Login from "./components/account/Login.jsx";
 import AccountPage from "./components/account/AccountPage.jsx";
 /*TODO
@@ -61,8 +61,11 @@ function App() {
                                             />
                                         }
                                     />
-                                    <Route path="/account" element={<AccountPage/>}/>
-                                    <Route path="/login" element={<Login/>}/>
+                                <Route
+                                  path="/account"
+                                  element={session ? <AccountPage /> : <Navigate to="/login" replace />}
+                                />
+                                <Route path="/login" element={<Login />} />
                                 </Routes>
                             </div>
                             <Footer/>

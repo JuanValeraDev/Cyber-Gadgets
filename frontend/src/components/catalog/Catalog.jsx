@@ -3,7 +3,7 @@ import Chatbot from "./Chatbot.jsx";
 import { useState} from "react";
 import debounce from 'lodash.debounce';
 import {MagnifyingGlassIcon} from "@heroicons/react/24/outline/index.js";
-import {API_URL, useFetchIsMobile, useFetchProducts} from "../hooks/Hooks.jsx";
+import {API_URL, useFetchIsMobile, useFetchProducts} from "../../hooks/Hooks.jsx";
 
 
 export default function Catalog({selectedCategory, onOpenChatbot, isOpen, onSearchQuery, searchQuery}) {

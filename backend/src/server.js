@@ -4,13 +4,9 @@ import cors from 'cors';
 import {catalog} from './mock-products.js';
 import dotenv from 'dotenv';
 import {GoogleGenAI} from "@google/genai";
-import {createClient} from '@supabase/supabase-js';
 
 // Load environment variables first!
 dotenv.config();
-
-// Create a single supabase client AFTER loading environment variables
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
 // Create conversations object
 const conversations = {};
@@ -24,18 +20,7 @@ app.use(cors());
 app.use(express.json());
 
 
-// Example endpoint to fetch data (now protected)
-app.get('/products', async (req, res) => {
-    const {data, error} = await supabase
-        .from('products')
-        .select('*');
 
-    if (error) {
-        return res.status(500).json({error: error.message});
-    }
-
-    return res.json(data);
-});
 
 app.get('/response', async (req, res) => {
     const inputValue = req.query.inputValue;

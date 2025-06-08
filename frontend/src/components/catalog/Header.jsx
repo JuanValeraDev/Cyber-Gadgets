@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import {useLocation} from 'react-router-dom'
-import styles from '../styles/Header.module.css'
+import styles from '../../styles/Header.module.css'
 import {
     ShoppingCartIcon,
     MoonIcon,
@@ -10,12 +10,12 @@ import {
     XMarkIcon,
     BuildingStorefrontIcon
 } from '@heroicons/react/24/outline'
-import {useTheme} from '../context/ThemeContext'
-import {useCart} from '../context/CartContext'
-import CartSidebar from './CartSidebar'
-import {categories} from "../categoriesList.js"
+import {useTheme} from '../../context/ThemeContext.jsx'
+import {useCart} from '../../context/CartContext.jsx'
+import CartSidebar from './CartSidebar.jsx'
+import {categories} from "../../categoriesList.js"
 import {useNavigate} from 'react-router-dom';
-import {useFetchIsMobile} from "../hooks/Hooks.jsx";
+import {useFetchIsMobile} from "../../hooks/Hooks.jsx";
 
 
 export default function Header({selectedCategory, onCategoryChange, onOpenChatbot, onSearchQuery, session}) {

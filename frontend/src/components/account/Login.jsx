@@ -1,7 +1,8 @@
 import {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 
-import {supabase} from '../../hooks/Hooks.jsx'
+
+import EmailVerificationModal, {supabase} from '../../hooks/Hooks.jsx'
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -11,6 +12,7 @@ const Login = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [inputFocus, setInputFocus] = useState(null);
     const navigate = useNavigate();
+    const [showVerificationModal, setShowVerificationModal] = useState(false)
 
 
     async function signInWithEmail() {
@@ -36,16 +38,20 @@ const Login = () => {
     async function signUpNewUser() {
         setIsLoading(true);
         try {
-            const {data, error} = await supabase.auth.signUp({
+            const {error} = await supabase.auth.signUp({
                 email: email,
                 password: password,
             });
 
             if (!error) {
-                navigate("/account", {state: {userData: data}});
+                setShowVerificationModal(true);
+                setIsLogin(true);
+                setEmail('');
+                setPassword('');
             } else {
                 setError(error);
             }
+
         } catch (err) {
             setError(err);
         } finally {
@@ -141,6 +147,7 @@ const Login = () => {
                 </div>
 
                 {/* Right panel - Login form with innovative design */}
+
                 <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-12">
                     <div
                         className="w-full max-w-md"
@@ -364,8 +371,16 @@ const Login = () => {
                     </div>
                 </div>
             </div>
+            {showVerificationModal && (
+                <EmailVerificationModal
+                    isOpen={showVerificationModal}
+                    onClose={() => setShowVerificationModal(false)}
+                    email={email}
+                />
+            )}
         </div>
     );
+
 };
 
 export default Login;
