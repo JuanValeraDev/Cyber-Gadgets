@@ -17,12 +17,12 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
     const API_URL = process.env.NODE_ENV === 'production' ? 'https://cyber-gadgets.onrender.com' : 'http://localhost:5000';
 
     const [sessionId] = useState(() => {
-        // Check if a session ID already exists in localStorage
+        //Comprueba si existe ya un ID de sesión en el localStorage
         const existingSessionId = localStorage.getItem('chatSessionId');
         if (existingSessionId) {
             return existingSessionId;
         }
-        // Create new session ID if none exists
+        //Crea un nuevo ID de sesión si no existe
         const newSessionId = uuidv4();
         localStorage.setItem('chatSessionId', newSessionId);
         return newSessionId;
@@ -57,32 +57,31 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
 
         checkDeviceOrientation();
 
-        // Add event listeners
+        // Se añaden los escuchadores de eventos
         window.addEventListener('resize', checkDeviceOrientation);
         window.addEventListener('orientationchange', checkDeviceOrientation);
 
-        // Cleanup
+        // Limpieza
         return () => {
             window.removeEventListener('resize', checkDeviceOrientation);
             window.removeEventListener('orientationchange', checkDeviceOrientation);
         };
     }, []);
 
-    // Auto-scroll to bottom when messages change
+    // Auto-scroll hacia abajo cuando cambia el estado de messages
     useEffect(() => {
         chatEndRef.current?.scrollIntoView({behavior: "smooth"});
     }, [messages]);
 
     // Handle animation timing when opening/closing
+    //Maneja el timing de la animación al abrir y cerrarse
     useEffect(() => {
         if (isOpen) {
             setIsRendered(true);
-            // We don't need any timing logic here, as the component needs to remain rendered
         } else {
-            // When closing, wait for animation to complete before removing from DOM
             const timer = setTimeout(() => {
                 setIsRendered(false);
-            }, 700); // Match this to your transition duration
+            }, 700);
             return () => clearTimeout(timer);
         }
     }, [isOpen]);
@@ -92,7 +91,8 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
 
         if (!inputValue.trim()) return;
 
-        // Add user message to chat
+        // Añadimos el mensaje del usuario
+
         const userMessage = {
             id: messages.length + 1,
             text: inputValue,
@@ -134,7 +134,6 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
 
     return (
         <div className={`fixed z-50 ${isMobileLandscape ? 'bottom-2 right-2' : 'bottom-6 right-6'}`}>
-            {/* Collapsed chat button - always visible when chat is closed */}
             {!isOpen && (
                 <button
                     onClick={toggleChat}
@@ -159,7 +158,7 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
                 </button>
             )}
 
-            {/* Expanded chat window */}
+            {/* Pantalla expandida*/}
             {isRendered && (
                 <div
                     className={`${getChatWindowStyles()} transition-all duration-700 ease-out rounded-lg ${
@@ -172,7 +171,7 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
                                 : "opacity-0 scale-75 rotate-3 shadow-none"
                     }`}
                 >
-                    {/* Chat header */}
+                    {/* Cabecera*/}
                     <div
                         className={`bg-primary text-white dark:bg-primary-dark flex justify-between items-center rounded-t-lg transition-all duration-700 ${
                             isMobileLandscape ? 'px-3 py-1' : 'px-4 py-3'
@@ -204,7 +203,7 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
                         </button>
                     </div>
 
-                    {/* Chat messages */}
+                    {/* Mensajes */}
                     <div
                         className={`flex-1 overflow-y-auto bg-gray-50 dark:bg-zinc-800 transition-all duration-500 ${
                             isMobileLandscape ? 'p-2' : 'p-4'
@@ -238,7 +237,7 @@ export default function Chatbot({onOpenChatbot, isOpen}) {
                         <div ref={chatEndRef}></div>
                     </div>
 
-                    {/* Chat input */}
+                    {/* Input */}
                     <form
                         onSubmit={handleSubmit}
                         className={`border-t dark:border-zinc-700 flex absolute bottom-0 left-0 right-0 transition-all duration-500 ${

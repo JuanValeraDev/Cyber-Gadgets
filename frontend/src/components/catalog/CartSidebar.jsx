@@ -3,7 +3,7 @@ import {useCart} from '../../context/CartContext.jsx';
 import styles from '../../styles/CartSidebar.module.css';
 import {useState} from 'react';
 
-// Checkout Success Modal Component
+// Modal de éxito al comprar
 function CheckoutSuccessModal({isOpen, onClose, orderDetails}) {
     if (!isOpen) return null;
 
@@ -57,7 +57,7 @@ function CheckoutSuccessModal({isOpen, onClose, orderDetails}) {
         </div>
     );
 }
-
+//Carro
 export default function CartSidebar({isOpen, onClose}) {
     const {cart, removeFromCart, updateQuantity, cartTotal} = useCart();
     const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -69,10 +69,10 @@ export default function CartSidebar({isOpen, onClose}) {
 
         setIsProcessing(true);
 
-        // Simulate processing time
+        //Se simula tiempo procesando
         await new Promise(resolve => setTimeout(resolve, 1500));
 
-        // Create order details
+        //Se crean los detalles del pedido
         const orderInfo = {
             total: cartTotal.toFixed(2),
             itemCount: cart.reduce((sum, item) => sum + item.quantity, 0),
@@ -81,7 +81,7 @@ export default function CartSidebar({isOpen, onClose}) {
 
         setOrderDetails(orderInfo);
 
-        // Clear the cart
+        //Limpiar carrito
         cart.forEach(item => removeFromCart(item.id));
 
         setIsProcessing(false);
@@ -90,7 +90,7 @@ export default function CartSidebar({isOpen, onClose}) {
 
     const handleModalClose = () => {
         setShowSuccessModal(false);
-        onClose(); // Close the cart sidebar too
+        onClose();
     };
 
     return (

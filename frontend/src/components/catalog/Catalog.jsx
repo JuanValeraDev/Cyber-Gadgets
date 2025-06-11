@@ -19,7 +19,7 @@ export default function Catalog({selectedCategory, onOpenChatbot, isOpen, onSear
         onSearchQuery(value);
     }, 300);
 
-    // Filter products by searchQuery and selectedCategory
+    //Filtra productos por categoría y parámetros de búsqueda
     const filteredProducts = products.filter((product) => {
         const matchesSearch = product.name
             .toLowerCase()

@@ -27,7 +27,7 @@ export default function Header({selectedCategory, onCategoryChange, onOpenChatbo
     const [isMobileLandscape, setIsMobileLandscape] = useState(false)
     const location = useLocation()
 
-    // Handle button click
+    //Maneja el click en el botón Account
     const handleAccountButtonClick = () => {
         setIsMobileMenuOpen(false)
         if (session) {
@@ -43,7 +43,7 @@ export default function Header({selectedCategory, onCategoryChange, onOpenChatbo
 
     useFetchIsMobile(setIsMobile)
 
-    // Check for mobile landscape orientation
+    //Comprueba si la horientación es horizontal y es móvil
     useEffect(() => {
         const checkMobileLandscape = () => {
             const width = window.innerWidth
@@ -89,7 +89,7 @@ export default function Header({selectedCategory, onCategoryChange, onOpenChatbo
 
                 {isMobile ? (
                     <div className="flex items-center">
-                        {/* Show hamburger toggle button */}
+                        {/*Muestra el botón de menú hamburguesa*/}
                         <button
                             onClick={toggleMobileMenu}
                             className={`${isMobileLandscape ? 'p-1' : 'p-2'} rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 ml-2`}
@@ -102,7 +102,6 @@ export default function Header({selectedCategory, onCategoryChange, onOpenChatbo
                             )}
                         </button>
 
-                        {/* Display cart count indicator on mobile */}
                         {cartItemsCount > 0 && (
                             <span
                                 className={`absolute bg-red-500 text-white text-xs rounded-full flex items-center justify-center ml-8 ${isMobileLandscape ? 'h-4 w-4 -mt-4 text-xs' : 'h-5 w-5 -mt-6'}`}>
@@ -156,7 +155,7 @@ export default function Header({selectedCategory, onCategoryChange, onOpenChatbo
                 )}
             </nav>
 
-            {/* Mobile menu dropdown */}
+            {/* Dropdown del menú para móvil */}
             {isMobile && isMobileMenuOpen && (
                 <div
                     className="bg-white dark:bg-zinc-700 shadow-lg rounded-b-lg px-4 py-2 absolute top-full left-0 right-0 z-50">
