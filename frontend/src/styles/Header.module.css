@@ -1,29 +1,29 @@
+/* Header pegajoso con sombra */
 .header {
-  @apply bg-white shadow-md sticky top-0 z-50 ;
+    @apply bg-white shadow-md sticky top-0 z-50;
 }
 
 .nav {
-  @apply container mx-auto px-4 py-2 flex items-center gap-8 justify-between ps-10 pe-10;
+    @apply container mx-auto px-4 py-2 flex items-center gap-8 justify-between ps-10 pe-10;
 }
 
 .logo {
-  @apply  font-bold text-primary  hover:text-secondary
-          transition-colors duration-200;
+    @apply font-bold text-primary hover:text-secondary
+    transition-colors duration-200;
 }
-
-
 
 .menu {
-  @apply flex items-center gap-4;
+    @apply flex items-center gap-4;
 }
 
+/* Barra de categorías con scroll horizontal en móvil */
 .categories {
-  @apply container mx-auto px-4 py-2 flex items-center gap-8 border-t
-          overflow-x-auto;
+    @apply container mx-auto px-4 py-2 flex items-center gap-8 border-t
+    overflow-x-auto;
 }
 
 .category {
-  @apply text-sm font-medium text-gray-500
-         hover:text-primary  transition-colors
-         duration-200 whitespace-nowrap cursor-pointer py-2;
+    @apply text-sm font-medium text-gray-500
+    hover:text-primary transition-colors
+    duration-200 whitespace-nowrap cursor-pointer py-2;
 }

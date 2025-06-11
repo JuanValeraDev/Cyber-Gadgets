@@ -4,6 +4,7 @@ import {categories} from '../../categoriesList.js'
 import {handleFormChange, handleImageInputChange, supabase} from "../../hooks/Hooks.jsx";
 
 export default function AccountInsert() {
+    // Estado para los datos del formulario de un nuevo producto
     const [formData, setFormData] = useState({
         name: '',
         price: '',
@@ -14,11 +15,16 @@ export default function AccountInsert() {
         image: null
     });
 
+    // Estado para la previsualización de la imagen
     const [imagePreview, setImagePreview] = useState(null);
+    // Estado para controlar el estado de envío del formulario
     const [submitting, setSubmitting] = useState(false);
+    // Estado para mostrar mensaje de éxito al guardar
     const [showSuccess, setShowSuccess] = useState(false);
+    // Estado para el progreso de la subida de la imagen (aunque no se usa visualmente, puede ser útil)
     const [uploadProgress, setUploadProgress] = useState(0);
 
+    // Manejadores de cambio para campos de formulario e input de imagen
     const handleChange = handleFormChange(setFormData);
     const handleImageChange = handleImageInputChange(setFormData, setImagePreview);
 
@@ -27,7 +33,7 @@ export default function AccountInsert() {
         if (!file) return null;
 
         try {
-            // Generar nombre único para la imagen
+            // Generar nombre único para la imagen usando un timestamp
             const timestamp = Date.now();
             const fileExtension = file.name.split('.').pop();
             const fileName = `product_${timestamp}.${fileExtension}`;
@@ -40,299 +46,217 @@ export default function AccountInsert() {
                 .upload(fileName, file);
 
             if (error) {
-                console.error('Error subiendo imagen:', error);
                 throw error;
             }
 
-            // Obtener URL pública de la imagen
-            const { data: publicData } = supabase.storage
+            // Construir la URL pública de la imagen subida
+            const { publicUrl } = supabase.storage
                 .from('product-images')
-                .getPublicUrl(fileName);
+                .getPublicUrl(fileName).data;
 
-            console.log('Imagen subida exitosamente:', publicData.publicUrl);
-            return publicData.publicUrl;
-
+            console.log('Imagen subida exitosamente. URL:', publicUrl);
+            return publicUrl;
         } catch (error) {
-            console.error('Error en uploadImage:', error);
-            throw new Error(`Error subiendo imagen: ${error.message}`);
+            console.error('Error al subir imagen:', error.message);
+            return null;
         }
     };
 
+    // Manejador para el envío del formulario
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitting(true);
-        setUploadProgress(0);
+        setShowSuccess(false);
+
+        let imageUrl = null;
+        if (formData.image) {
+            imageUrl = await uploadImage(formData.image);
+            if (!imageUrl) {
+                setSubmitting(false);
+                alert('Error al subir la imagen. Por favor, inténtalo de nuevo.');
+                return;
+            }
+        }
 
         try {
-            // Check if user is authenticated
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-                throw new Error('You must be logged in to add products');
-            }
-
-            let imageUrl = null;
-            if (formData.image) {
-                setUploadProgress(25);
-                imageUrl = await uploadImage(formData.image);
-                setUploadProgress(50);
-            }
-
-            setUploadProgress(75);
-
+            // Inserta el nuevo producto en la tabla 'products' de Supabase
             const { data, error } = await supabase
                 .from('products')
-                .insert({
-                    name: formData.name,
-                    price: parseFloat(formData.price),
-                    description: formData.description,
-                    stock: parseInt(formData.stock),
-                    category: formData.category,
-                    isNew: Boolean(formData.isNew),
-                    image: imageUrl,
-                })
-                .select();
+                .insert([
+                    {
+                        name: formData.name,
+                        price: parseFloat(formData.price),
+                        description: formData.description,
+                        stock: parseInt(formData.stock, 10),
+                        category: formData.category,
+                        isNew: formData.isNew,
+                        image_url: imageUrl, // Guarda la URL de la imagen
+                        created_at: new Date().toISOString(), // Fecha de creación
+                    },
+                ]);
 
-            if (error) throw error;
+            if (error) {
+                throw error;
+            }
 
-            // Rest of your success handling...
+            console.log('Producto insertado con éxito:', data);
+            setShowSuccess(true);
+            // Reinicia el formulario después de un envío exitoso
+            setFormData({
+                name: '',
+                price: '',
+                description: '',
+                stock: '',
+                category: '',
+                isNew: false,
+                image: null
+            });
+            setImagePreview(null); // Limpia la previsualización de la imagen
+            setTimeout(() => setShowSuccess(false), 3000); // Oculta el mensaje de éxito después de 3 segundos
         } catch (error) {
-            console.error('Submission error:', error);
-            alert(`Error: ${error.message}`);
+            console.error('Error al insertar producto:', error.message);
+            alert(`Error al insertar producto: ${error.message}`);
         } finally {
             setSubmitting(false);
-            setUploadProgress(0);
         }
     };
-    return (
-        <div className="bg-white rounded-lg shadow-lg px-20 py-14 max-w-full mx-auto mt-6 mb-6 dark:bg-zinc-700 dark:border-2 dark:border-terciary-dark ">
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-primary dark:text-primary-dark">Add New Product</h2>
-                {showSuccess && (
-                    <div className="bg-green-100 text-green-700 px-4 py-2 rounded-md flex items-center">
-                        <span className="font-medium">Product added successfully!</span>
-                    </div>
-                )}
-            </div>
 
-            {/* Barra de progreso cuando se está subiendo */}
-            {submitting && uploadProgress > 0 && (
-                <div className="mb-4">
-                    <div className="flex justify-between text-sm text-gray-600 mb-1">
-                        <span>Uploading...</span>
-                        <span>{uploadProgress}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                            style={{ width: `${uploadProgress}%` }}
-                        ></div>
-                    </div>
+    return (
+        <div className="container mx-auto p-4 dark:bg-gray-900 dark:text-gray-300">
+            <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Insertar Nuevo Producto</h2>
+
+            {/* Mensaje de éxito al guardar */}
+            {showSuccess && (
+                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4 dark:bg-green-800 dark:border-green-700 dark:text-green-100" role="alert">
+                    <strong className="font-bold">¡Éxito!</strong>
+                    <span className="block sm:inline"> El producto ha sido guardado correctamente.</span>
+                    <span className="absolute top-0 bottom-0 right-0 px-4 py-3" onClick={() => setShowSuccess(false)}>
+                        <X className="h-6 w-6 fill-current"/>
+                    </span>
                 </div>
             )}
 
-            <div className="space-y-6">
+            <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Left column */}
-                    <div className="space-y-6">
-                        {/* Product Name */}
-                        <div>
-                            <label htmlFor="name"
-                                   className="block text-sm font-medium text-gray-700 mb-1 dark:text-secondary-dark">
-                                Product Name *
-                            </label>
-                            <input
-                                type="text"
-                                id="name"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                dark:bg-gray-950 dark:border-gray-500 dark:text-white dark:placeholder-gray-400"
-                                placeholder="Enter product name"
-                            />
-                        </div>
-
-                        {/* Price */}
-                        <div>
-                            <label htmlFor="price"
-                                   className="block text-sm font-medium text-gray-700 mb-1 dark:text-secondary-dark">
-                                Price ($) *
-                            </label>
-                            <input
-                                type="number"
-                                id="price"
-                                name="price"
-                                value={formData.price}
-                                onChange={handleChange}
-                                min="0"
-                                step="0.01"
-                                required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                                                dark:bg-gray-950 dark:border-gray-500 dark:text-white dark:placeholder-gray-400"
-                                placeholder="0.00"
-                            />
-                        </div>
-
-                        {/* Stock */}
-                        <div>
-                            <label htmlFor="stock"
-                                   className="block text-sm font-medium text-gray-700 mb-1 dark:text-secondary-dark">
-                                Stock Quantity *
-                            </label>
-                            <input
-                                type="number"
-                                id="stock"
-                                name="stock"
-                                value={formData.stock}
-                                onChange={handleChange}
-                                min="0"
-                                required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                                                dark:bg-gray-950 dark:border-gray-500 dark:text-white dark:placeholder-gray-400"
-                                placeholder="Available quantity"
-                            />
-                        </div>
-
-                        {/* Category */}
-                        <div>
-                            <label htmlFor="category"
-                                   className="block text-sm font-medium text-gray-700 mb-1 dark:text-secondary-dark">
-                                Category *
-                            </label>
-                            <select
-                                id="category"
-                                name="category"
-                                value={formData.category}
-                                onChange={handleChange}
-                                required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white                                 dark:bg-gray-950 dark:border-gray-500 dark:text-white dark:placeholder-gray-400"
-                            >
-                                <option value="">Select category</option>
-                                {categories.categories.map((category) => {
-                                    if (category !== "All") {
-                                        return <option key={category} value={category}>{category}</option>
-                                    }
-                                })}
-                            </select>
-                        </div>
-
-                        {/* Is New Toggle */}
-                        <div className="flex items-center dark:text-secondary-dark">
-                            <input
-                                type="checkbox"
-                                id="isNew"
-                                name="isNew"
-                                checked={formData.isNew}
-                                onChange={handleChange}
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                            />
-                            <label htmlFor="isNew"
-                                   className="ml-2 block text-sm text-gray-700 dark:text-secondary-dark">
-                                Mark as New Product
-                            </label>
-                        </div>
+                    {/* Campo de Nombre del Producto */}
+                    <div>
+                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre del Producto</label>
+                        <input
+                            type="text"
+                            name="name"
+                            id="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            required
+                            className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm p-2 dark:bg-gray-700 dark:text-white"
+                        />
                     </div>
 
-                    {/* Right column */}
-                    <div className="space-y-6">
-                        {/* Description */}
-                        <div>
-                            <label htmlFor="description"
-                                   className="block text-sm font-medium text-gray-700 mb-1 dark:text-secondary-dark">
-                                Description *
-                            </label>
-                            <textarea
-                                id="description"
-                                name="description"
-                                value={formData.description}
-                                onChange={handleChange}
-                                rows="5"
-                                required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                                               dark:bg-gray-950 dark:border-gray-500 dark:text-white dark:placeholder-gray-400"
-                                placeholder="Enter product description"
-                            ></textarea>
-                        </div>
+                    {/* Campo de Precio */}
+                    <div>
+                        <label htmlFor="price" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Precio</label>
+                        <input
+                            type="number"
+                            name="price"
+                            id="price"
+                            value={formData.price}
+                            onChange={handleChange}
+                            required
+                            min="0"
+                            step="0.01"
+                            className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm p-2 dark:bg-gray-700 dark:text-white"
+                        />
+                    </div>
 
-                        {/* Image Upload */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-secondary-dark">
-                                Product Image
-                            </label>
-                            <div
-                                className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md ${imagePreview ? 'border-green-300 bg-green-50 dark:border-green-600 dark:bg-green-900/20' : 'border-gray-300 hover:border-gray-400'} dark:hover:border-primary-dark`}>
-                                {imagePreview ? (
-                                    <div className="space-y-2 text-center">
-                                        <img src={imagePreview} alt="Preview" className="mx-auto h-32 object-contain rounded-md"/>
-                                        <div className="text-sm text-gray-600 dark:text-gray-300">
-                                            {formData.image && (
-                                                <span>Size: {(formData.image.size / 1024).toFixed(1)} KB</span>
-                                            )}
-                                        </div>
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                setImagePreview(null);
-                                                setFormData({...formData, image: null});
-                                            }}
-                                            className="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-600 dark:text-white dark:border-gray-500"
-                                        >
-                                            <X size={16} className="mr-1"/>
-                                            Remove
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <div className="space-y-1 text-center">
-                                        <div className="flex text-sm text-gray-600">
-                                            <label htmlFor="image-upload"
-                                                   className="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none">
-                                                <div className="flex flex-col items-center">
-                                                    <ImagePlus className="mx-auto h-12 w-12 text-gray-400 dark:text-primary-dark"/>
-                                                    <span className="dark:text-secondary-dark text-primary">Upload a file</span>
-                                                    <p className="text-xs text-gray-500 dark:text-gray-400">PNG, JPG, GIF up to 10MB</p>
-                                                </div>
-                                                <input
-                                                    id="image-upload"
-                                                    name="image-upload"
-                                                    type="file"
-                                                    accept="image/*"
-                                                    className="sr-only"
-                                                    onChange={handleImageChange}
-                                                />
-                                            </label>
-                                        </div>
-                                    </div>
-                                )}
+                    {/* Campo de Descripción */}
+                    <div className="col-span-1 md:col-span-2">
+                        <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Descripción</label>
+                        <textarea
+                            name="description"
+                            id="description"
+                            value={formData.description}
+                            onChange={handleChange}
+                            rows="3"
+                            className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm p-2 dark:bg-gray-700 dark:text-white"
+                        ></textarea>
+                    </div>
+
+                    {/* Campo de Stock */}
+                    <div>
+                        <label htmlFor="stock" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Stock</label>
+                        <input
+                            type="number"
+                            name="stock"
+                            id="stock"
+                            value={formData.stock}
+                            onChange={handleChange}
+                            required
+                            min="0"
+                            className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm p-2 dark:bg-gray-700 dark:text-white"
+                        />
+                    </div>
+
+                    {/* Campo de Categoría */}
+                    <div>
+                        <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Categoría</label>
+                        <select
+                            name="category"
+                            id="category"
+                            value={formData.category}
+                            onChange={handleChange}
+                            required
+                            className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm p-2 dark:bg-gray-700 dark:text-white"
+                        >
+                            <option value="">Selecciona una categoría</option>
+                            {categories.map((category) => (
+                                <option key={category} value={category}>{category}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Checkbox "Es Nuevo" */}
+                    <div className="col-span-1 md:col-span-2 flex items-center">
+                        <input
+                            type="checkbox"
+                            name="isNew"
+                            id="isNew"
+                            checked={formData.isNew}
+                            onChange={(e) => setFormData({...formData, isNew: e.target.checked})}
+                            className="h-4 w-4 text-primary border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700"
+                        />
+                        <label htmlFor="isNew" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">Es Nuevo</label>
+                    </div>
+
+                    {/* Campo de Imagen */}
+                    <div className="col-span-1 md:col-span-2">
+                        <label htmlFor="image" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Imagen del Producto</label>
+                        <input
+                            type="file"
+                            name="image"
+                            id="image"
+                            onChange={handleImageChange}
+                            accept="image/*"
+                            className="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400
+                                       file:mr-4 file:py-2 file:px-4
+                                       file:rounded-md file:border-0
+                                       file:text-sm file:font-semibold
+                                       file:bg-primary file:text-white
+                                       hover:file:bg-secondary dark:file:bg-primary-dark dark:hover:file:bg-terciary-dark"
+                        />
+                        {imagePreview && (
+                            <div className="mt-4">
+                                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Previsualización de Imagen:</p>
+                                <img src={imagePreview} alt="Previsualización" className="mt-2 w-32 h-32 object-cover rounded-md shadow-sm"/>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
 
-                <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-600">
+                {/* Botón de Enviar Formulario */}
+                <div className="mt-6">
                     <button
-                        type="button"
-                        className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-600 dark:text-white dark:border-gray-500"
-                        onClick={() => {
-                            setFormData({
-                                name: '',
-                                price: '',
-                                description: '',
-                                stock: '',
-                                category: '',
-                                isNew: false,
-                                image: null
-                            });
-                            setImagePreview(null);
-                        }}
+                        type="submit"
                         disabled={submitting}
-                    >
-                        Reset
-                    </button>
-                    <button
-                        type="button"
-                        disabled={submitting}
-                        onClick={handleSubmit}
                         className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${submitting ? 'bg-blue-400 cursor-not-allowed' : 'bg-primary hover:bg-secondary'} dark:bg-primary-dark`}
                     >
                         {submitting ? (
@@ -344,17 +268,17 @@ export default function AccountInsert() {
                                     <path className="opacity-75" fill="currentColor"
                                           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
-                                {formData.image ? 'Uploading...' : 'Processing...'}
+                                {formData.image ? 'Subiendo...' : 'Procesando...'}
                             </>
                         ) : (
                             <>
                                 <Save size={16} className="mr-2 "/>
-                                Save Product
+                                Guardar Producto
                             </>
                         )}
                     </button>
                 </div>
-            </div>
+            </form>
         </div>
     );
 }

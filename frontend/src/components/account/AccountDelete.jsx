@@ -14,11 +14,13 @@ import {categories} from "../../categoriesList.js"
 export default function AccountDelete() {
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    // Estado para mostrar el mensaje de eliminación (éxito/error)
     const [deleteStatus, setDeleteStatus] = useState({show: false, message: '', isError: false});
     const [categoryFilter, setCategoryFilter] = useState('');
     const [categoriesOpen, setCategoriesOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false)
 
+    // Desestructuración de estados y funciones del hook useProductState
     const {
         products,
         setProducts,
@@ -31,275 +33,239 @@ export default function AccountDelete() {
         showModal, setShowModal
     } = useProductState()
 
+    // Hook para cargar productos al montar el componente
     useFetchProducts(API_URL, setProducts, showModal);
 
     useEffect(() => {
-            setFilteredProducts(
-                products.filter(product => {
-                    const matchesSearch =
-                        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        product.description.toLowerCase().includes(searchTerm.toLowerCase());
-                    const matchesCategory = categoryFilter === '' || product.category === categoryFilter;
-                    return matchesSearch && matchesCategory;
-                })
-            );
-        },
-        [products, searchTerm, categoryFilter, showModal, setFilteredProducts]
-    )
+        // Filtra productos por término de búsqueda y categoría
+        setFilteredProducts(
+            products.filter(product => {
+                const matchesSearch =
+                    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    product.description.toLowerCase().includes(searchTerm.toLowerCase());
+                const matchesCategory = categoryFilter === '' || product.category === categoryFilter;
+                return matchesSearch && (matchesCategory);
+            })
+        );
+    }, [products, searchTerm, categoryFilter]);
 
-
-    const handleConfirmDelete = async () => {
-        if (!selectedProduct) return;
-
-        const {data, error} = await supabase.from("products").delete().eq("id", selectedProduct.id)
-
-        // Show success message
-        setDeleteStatus({
-            show: true,
-            message: `"${selectedProduct.name}" has been deleted successfully`,
-            isError: false
-        });
-
-        // Reset states
-        setShowModal(false);
-        setSelectedProduct(null);
-        setDeleteStatus({show: false, message: '', isError: false});
-
-        if (error) {
-            console.log("Error: " + error.message);
-        }
-    }
-
-
-    const handleClearSelection = () => {
-        setSelectedProduct(null);
-        setShowModal(false)
+    // Maneja la selección de un producto del dropdown
+    const handleProductSelectAndClose = (product) => {
+        handleProductSelect(product, setSelectedProduct, setDropdownOpen);
     };
 
-    useFetchProducts(API_URL, setProducts);
-    useFetchIsMobile(setIsMobile);
+    // Abre/cierra el dropdown de productos
+    const toggleDropdown = () => {
+        setDropdownOpen(!dropdownOpen);
+    };
+
+    // Maneja el cambio en el input de búsqueda
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value);
+        setDropdownOpen(true); // Abre el dropdown al escribir
+    };
+
+    // Limpia la búsqueda y el producto seleccionado
+    const clearSearch = () => {
+        setSearchTerm('');
+        setSelectedProduct(null);
+        setDeleteStatus({show: false, message: '', isError: false});
+    };
+
+    // Cierra el modal de confirmación de eliminación
+    const closeModal = () => {
+        setShowModal(false);
+    };
+
+    // Muestra el modal de confirmación antes de eliminar
+    const handleDeleteClick = () => {
+        if (selectedProduct) {
+            setShowModal(true);
+        }
+    };
+
+    // Confirma y ejecuta la eliminación del producto
+    const handleConfirmDelete = async () => {
+        if (!selectedProduct || !selectedProduct.id) {
+            setDeleteStatus({show: true, message: 'No hay producto seleccionado para eliminar.', isError: true});
+            setShowModal(false);
+            return;
+        }
+
+        try {
+            // Elimina el producto de la base de datos Supabase
+            const {error} = await supabase
+                .from('products')
+                .delete()
+                .eq('id', selectedProduct.id);
+
+            if (error) {
+                throw error;
+            }
+
+            // Elimina la imagen asociada del almacenamiento de Supabase
+            if (selectedProduct.image_url) {
+                const fileName = selectedProduct.image_url.split('/').pop();
+                const {error: storageError} = await supabase.storage
+                    .from('product-images')
+                    .remove([fileName]);
+
+                if (storageError) {
+                    console.error('Error al eliminar la imagen del almacenamiento:', storageError.message);
+                    // Decide si quieres lanzar este error o solo loggearlo
+                }
+            }
+
+            // Actualiza la lista de productos después de la eliminación
+            setProducts(products.filter(p => p.id !== selectedProduct.id));
+            setSelectedProduct(null); // Limpia el producto seleccionado
+            setShowModal(false); // Cierra el modal
+            setDeleteStatus({show: true, message: 'Producto eliminado con éxito.', isError: false}); // Muestra mensaje de éxito
+
+        } catch (error) {
+            console.error('Error al eliminar el producto:', error.message);
+            setDeleteStatus({show: true, message: `Error al eliminar el producto: ${error.message}`, isError: true}); // Muestra mensaje de error
+            setShowModal(false);
+        }
+    };
 
 
-    return (<>
+    return (
+        <>
+            <div className="container mx-auto p-4 dark:bg-gray-900 dark:text-gray-300">
+                <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Eliminar Producto</h2>
 
-            {
-                <div
-                    className="bg-white rounded-lg shadow-lg sm:px-4 px-4 sm:py-8 py-4 max-w-full mx-auto mt-6 mb-6 dark:bg-zinc-700 dark:border-2 dark:border-terciary-dark ">
-
-
-                    {/* Search and Filter Section */}
-
-                    <div className="mb-6 space-y-4">
-                        <div className="flex flex-col gap-4 sm:flex-row">
-                            {/* Search Input */}
-                            <div className="relative flex-grow">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Search size={18} className="text-gray-400"/>
-                                </div>
-                                <input
-                                    type="text"
-                                    className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-primary text-sm dark:bg-gray-950 dark:border-gray-500 dark:text-white dark:placeholder-gray-400"
-                                    placeholder="Search products by name or description..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                />
+                {/* Área de búsqueda y selección de producto */}
+                <div className="mb-4 relative">
+                    <label htmlFor="search-product" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Buscar y seleccionar producto:
+                    </label>
+                    <div className="mt-1 relative rounded-md shadow-sm">
+                        <input
+                            type="text"
+                            id="search-product"
+                            className="form-input block w-full pl-10 pr-12 dark:bg-gray-700 dark:text-white dark:border-gray-600 border-gray-300 rounded-md"
+                            placeholder="Buscar por nombre o descripción..."
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                            onFocus={() => setDropdownOpen(true)} // Abre el dropdown al enfocar
+                        />
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Search className="h-5 w-5 text-gray-400"/>
+                        </div>
+                        {searchTerm && (
+                            <div className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer">
+                                <X className="h-5 w-5 text-gray-400 hover:text-gray-600" onClick={clearSearch}/>
                             </div>
+                        )}
+                    </div>
 
-                            {/* Category Filter */}
-                            <div className="relative w-full sm:w-64">
-                                <div
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md flex justify-between items-center cursor-pointer bg-white dark:bg-gray-950 dark:border-gray-500 dark:text-white dark:placeholder-gray-400"
-                                    onClick={() => setCategoriesOpen(!categoriesOpen)}
+                    {/* Dropdown de resultados de búsqueda */}
+                    {dropdownOpen && filteredProducts.length > 0 && (
+                        <ul className="absolute z-10 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-auto mt-1">
+                            {filteredProducts.map(product => (
+                                <li
+                                    key={product.id}
+                                    className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex items-center"
+                                    onClick={() => handleProductSelectAndClose(product)}
                                 >
-                    <span
-                        className={categoryFilter ? 'text-gray-900 dark:text-gray-200  h-5  overflow-hidden whitespace-nowrap text-ellipsis' : 'text-gray-500'}>
-                        {categoryFilter || 'Filter by category'}
-                    </span>
-                                    <ChevronDown size={18}
-                                                 className={`text-gray-500 transition-transform ${categoriesOpen ? 'rotate-180' : ''}`}/>
-                                </div>
-
-                                {categoriesOpen && (
-                                    <div
-                                        className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-                                        <div
-                                            className="px-4 py-2 hover:bg-secondary hover:text-white cursor-pointer border-b border-gray-200 dark:bg-gray-950 dark:border-gray-500 dark:text-white dark:placeholder-gray-400"
-                                            onClick={() => {
-                                                setCategoryFilter('');
-                                                setCategoriesOpen(false);
-                                            }}
-                                        >
-                                            All Categories
-                                        </div>
-                                        {categories.categories.map((category) => {
-                                            if (category !== "All") {
-
-                                                return <div
-                                                    key={category}
-                                                    className="px-4 py-2 hover:bg-secondary hover:text-white cursor-pointer dark:bg-gray-950 dark:border-gray-500 dark:text-gray-300 dark:placeholder-gray-400"
-                                                    onClick={() => {
-                                                        setCategoryFilter(category);
-                                                        setCategoriesOpen(false);
-                                                    }}
-                                                    title={category}
-                                                >
-                                                    {category}
-                                                </div>
-                                            }
-                                        })}
+                                    <img src={product.image_url} alt={product.name}
+                                         className="w-10 h-10 object-cover rounded-md mr-3"/>
+                                    <div>
+                                        <p className="font-medium text-gray-900 dark:text-gray-200">{product.name}</p>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">${product.price.toFixed(2)}</p>
                                     </div>
-                                )}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+
+                {/* Mensajes de estado (éxito/error) */}
+                {deleteStatus.show && (
+                    <div className={`p-3 rounded-md mb-4 ${deleteStatus.isError ? 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100' : 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'}`}>
+                        {deleteStatus.message}
+                    </div>
+                )}
+
+                {/* Información del producto seleccionado y botón de eliminación */}
+                {selectedProduct && (
+                    <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg p-6">
+                        <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">
+                            Producto Seleccionado
+                        </h3>
+                        <div className="flex items-center">
+                            <img src={selectedProduct.image_url} alt={selectedProduct.name}
+                                 className="w-20 h-20 object-cover rounded-md mr-4"/>
+                            <div>
+                                <p className="font-medium text-gray-900 dark:text-gray-300">{selectedProduct.name}</p>
+                                <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">Categoría: {selectedProduct.category}</p>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Precio:
+                                    ${selectedProduct.price.toFixed(2)} -
+                                    Stock: {selectedProduct.stock}</p>
+                                <div className="mt-3">
+                                    <button
+                                        onClick={handleDeleteClick}
+                                        className="bg-primary hover:bg-secondary dark:bg-primary-dark hover:dark:bg-terciary-dark text-white px-4 py-2 rounded-md inline-flex items-center"
+                                    >
+                                        <Trash2 size={16} className="mr-2"/>
+                                        Eliminar Este Producto
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
+                )}
 
-
-                    {/* Product List Section */}
-                    {filteredProducts.length > 0 && !showModal ? (
-                        <div className="mb-6 ">
-                            <div className="block sm:hidden ">
-                                <div className="grid gap-4 " style={{maxHeight: '60vh', overflowY: 'auto'}}>
-                                    {filteredProducts.map((product) => (
-                                        <div key={product.id}
-                                             className="bg-white border-2 dark:bg-zinc-800 border-gray-200 dark:border-zinc-500 rounded-lg p-4 flex flex-col ">
-                                            <div className="flex items-center mb-2">
-                                                <img className="h-28 w-28 rounded-full object-cover" src={product.image}
-                                                     alt={product.name}/>
-                                                <div className="ml-4 flex-1">
-                                                    <div
-                                                        className="text-base font-medium text-gray-900 dark:text-white">{product.name}</div>
-                                                    {product.isNew && <span
-                                                        className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-primary-dark dark:text-white">New</span>}
-                                                </div>
-                                            </div>
-                                            <div className="text-sm text-gray-500 mb-1 dark:text-zinc-50">Category: <span
-                                                className="text-gray-900 dark:text-zinc-200">{product.category}</span></div>
-                                            <div className="text-sm text-gray-500 mb-1 dark:text-zinc-50">Price: <span
-                                                className="text-gray-900 dark:text-zinc-200">${product.price.toFixed(2)}</span></div>
-                                            <div className="text-sm text-gray-500 mb-2 dark:text-zinc-50">Stock: <span
-                                                className="text-gray-900 dark:text-zinc-200">{product.stock}</span></div>
-                                            <button
-                                                className="text-white bg-terciary hover:bg-terciary-light dark:bg-primary-dark dark:text-white px-3 py-1 rounded-md inline-flex items-center self-end"
-                                                onClick={() => handleProductSelect(product, setSelectedProduct, setDropdownOpen, setShowModal)}
-                                            >
-                                                <Trash2 size={16} className="mr-1"/>
-                                                Delete
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                            <div className="hidden sm:block ">
-                                <div
-                                    className="overflow-x-auto border border-gray-200 rounded-lg dark:border-zinc-500 dark:border-2"
-                                    style={{maxHeight: '80vh', overflowY: 'auto'}}>
-                                    <table className="min-w-full divide-y divide-gray-200 dark:divide-zinc-500">
-                                        <thead className="bg-gray-50 dark:bg-zinc-900 p-8 ">
-                                        <tr>
-                                            <th scope="col"
-                                                className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap dark:text-gray-200">Product
-                                            </th>
-                                            <th scope="col"
-                                                className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap dark:text-gray-200">Category
-                                            </th>
-                                            <th scope="col"
-                                                className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap dark:text-gray-200">Price
-                                            </th>
-                                            <th scope="col"
-                                                className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap dark:text-gray-200">Stock
-                                            </th>
-                                            <th scope="col"
-                                                className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap dark:text-gray-200">Action
-                                            </th>
-                                        </tr>
-                                        </thead>
-                                        <tbody className="bg-white divide-y divide-gray-200 dark:divide-zinc-500">
-                                        {filteredProducts.map((product) => (
-                                            <tr key={product.id} className="hover:bg-gray-50 dark:bg-zinc-800  dark:hover-bg-zinc-700">
-                                                <td className="xl:ps-20 p-4 py-4 whitespace-nowrap">
-                                                    <div className="flex items-center">
-                                                        <div className="h-20 w-20 flex-shrink-0">
-                                                            <img className="h-20 w-20 rounded-full object-cover"
-                                                                 src={product.image}
-                                                                 alt={product.name}/>
-                                                        </div>
-                                                        <div className="ml-4">
-                                                            <div
-                                                                className="text-sm font-medium text-gray-900 dark:text-gray-200">{product.name}</div>
-                                                            {product.isNew && <span
-                                                                className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-primary text-white dark:bg-primary-dark dark:text-white">New</span>}
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="px-4 py-4 whitespace-nowrap">
-                                                    <div
-                                                        className="text-sm text-gray-500 dark:text-gray-300">{product.category}</div>
-                                                </td>
-                                                <td className="px-4 py-4 whitespace-nowrap">
-                                                    <div
-                                                        className="text-sm text-gray-900 dark:text-gray-300">${product.price.toFixed(2)}</div>
-                                                </td>
-                                                <td className="px-4 py-4 whitespace-nowrap">
-                                                    <div
-                                                        className="text-sm text-gray-900 dark:text-gray-300">{product.stock}</div>
-                                                </td>
-                                                <td className="xl:pe-20 px-4 py-4 whitespace-nowrap text-sm font-medium">
-                                                    <button
-                                                        className="text-white bg-primary hover:bg-secondary dark:bg-primary-dark hover:dark:bg-terciary-dark px-3 py-1 rounded-md inline-flex items-center"
-                                                        onClick={() => handleProductSelect(product, setSelectedProduct, setDropdownOpen, setShowModal)}
-                                                    >
-                                                        <Trash2 size={16} className="mr-1"/>
-                                                        Delete
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    ) : (!showModal &&
-                        <div className="py-6 text-center bg-gray-50 rounded-lg border border-gray-200">
-                            <p className="text-gray-500">No products found matching your criteria.</p>
-                        </div>
-                    )}
-                </div>}
-            <div>
-                {/* Selected Product Section */}
-                {selectedProduct && showModal && (
-                    <div className="fixed inset-0 flex items-center justify-center z-40 bg-black bg-opacity-50 ">
+                {/* Modal de confirmación de eliminación */}
+                {showModal && (
+                    <div className="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog"
+                         aria-modal="true">
                         <div
-                            className="bg-white rounded-lg p-6 max-w-md w-full mx-4 border border-gray-200 shadow-lg dark:bg-zinc-700 dark:border-terciary-dark">
-                            <div
-                                className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
-                                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-200">Selected Product</h3>
-                                <button
-                                    className="text-gray-500 hover:text-gray-700 self-end sm:self-auto"
-                                    onClick={handleClearSelection}
-                                >
-                                    <X size={20}/>
-                                </button>
-                            </div>
+                            className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+                                 aria-hidden="true"></div>
 
-                            <div className="flex flex-col sm:flex-row items-start gap-4">
-                                <img src={selectedProduct.image} alt={selectedProduct.name}
-                                     className="w-20 h-20 object-cover rounded-md"/>
-                                <div>
-                                    <p className="font-medium text-gray-900 dark:text-gray-300">{selectedProduct.name}</p>
-                                    <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">Category: {selectedProduct.category}</p>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">Price:
-                                        ${selectedProduct.price.toFixed(2)} -
-                                        Stock: {selectedProduct.stock}</p>
-                                    <div className="mt-3">
-                                        <button
-                                            onClick={handleConfirmDelete}
-                                            className="bg-primary hover:bg-secondary dark:bg-primary-dark hover:dark:bg-terciary-dark text-white px-4 py-2 rounded-md inline-flex items-center"
-                                        >
-                                            <Trash2 size={16} className="mr-2"/>
-                                            Delete This Product
-                                        </button>
+                            <span className="hidden sm:inline-block sm:align-middle sm:h-screen"
+                                  aria-hidden="true">&#8203;</span>
+
+                            <div
+                                className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                                <div className="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                    <div className="sm:flex sm:items-start">
+                                        <div
+                                            className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                                            <Trash2 className="h-6 w-6 text-red-600"/>
+                                        </div>
+                                        <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                            <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white"
+                                                id="modal-title">
+                                                Eliminar Producto
+                                            </h3>
+                                            <div className="mt-2">
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                    ¿Estás seguro de que quieres eliminar el producto <span
+                                                    className="font-bold">{selectedProduct?.name}</span>? Esta acción no se puede deshacer.
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
+                                </div>
+                                <div className="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                    <button
+                                        type="button"
+                                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                                        onClick={handleConfirmDelete}
+                                    >
+                                        Eliminar
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                                        onClick={closeModal}
+                                    >
+                                        Cancelar
+                                    </button>
                                 </div>
                             </div>
                         </div>

@@ -1,5 +1,4 @@
-
-
+// Exportamos un objeto que representa el catálogo de productos
 export const catalog = {
     products: [
         {
@@ -62,7 +61,6 @@ export const catalog = {
             stock: 42,
             isNew: false
         },
-
         {
             id: '7',
             name: 'Nebula Voice Assistant Orb',

@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {createClient} from "@supabase/supabase-js";
 
-
+// Hook personalizado para manejar el estado de productos
 export function useProductState() {
     const [products, setProducts] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -23,16 +23,13 @@ export function useProductState() {
     };
 }
 
-
 export function handleProductSelect(product, setSelectedProduct, setDropdownOpen, setShowModal) {
-    console.log("En handleProductSelect")
     setSelectedProduct(product);
     setShowModal(true)
     setDropdownOpen(false);
-
 }
 
-
+// Configuración de API según el entorno
 export const API_URL = import.meta.env.MODE === 'production'
     ? import.meta.env.API_URL_PRODUCTION
     : import.meta.env.API_URL_DEV
@@ -42,6 +39,7 @@ const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// Hook para obtener productos desde Supabase
 export function useFetchProducts(API_URL, setProducts, showModal) {
     useEffect(() => {
         async function fetchProducts() {
@@ -60,8 +58,8 @@ export function useFetchProducts(API_URL, setProducts, showModal) {
     }, [API_URL, setProducts, showModal]);
 }
 
+// Hook para detectar si estamos en dispositivo móvil
 export function useFetchIsMobile(setIsMobile) {
-
     useEffect(() => {
         const handleResize = () => {
             const mobile = window.innerWidth < 768
@@ -73,10 +71,9 @@ export function useFetchIsMobile(setIsMobile) {
 
         return () => window.removeEventListener('resize', handleResize)
     }, [])
-
 }
 
-
+// Manejador universal para cambios en formularios
 export function handleFormChange(setFormData) {
     return (e) => {
         const {name, value, type, checked} = e.target;
@@ -87,6 +84,7 @@ export function handleFormChange(setFormData) {
     };
 }
 
+// Manejador específico para inputs de imagen con preview
 export function handleImageInputChange(setFormData, setImagePreview) {
     return (e) => {
         const file = e.target.files[0];
@@ -105,9 +103,7 @@ export function handleImageInputChange(setFormData, setImagePreview) {
     };
 }
 
-// EmailVerificationModal.jsx
-
-
+// Modal de verificación de email
 function EmailVerificationModal({isOpen, onClose, email}) {
     if (!isOpen) return null;
 

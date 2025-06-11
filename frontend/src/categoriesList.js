@@ -1,5 +1,4 @@
-
-
+// Categorías disponibles en el catálogo de productos futuristas
 export const categories = {
     categories: [
         'All',

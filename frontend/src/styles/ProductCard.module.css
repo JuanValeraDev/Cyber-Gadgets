@@ -1,60 +1,66 @@
+/* Card de producto con hover effect */
 .card {
-  @apply bg-gray-100  rounded-lg overflow-hidden
-         flex flex-col hover:bg-white p-2;
+    @apply bg-gray-100 rounded-lg overflow-hidden
+    flex flex-col hover:bg-white p-2;
 }
 
 .imageContainer {
-  @apply relative aspect-square overflow-hidden bg-gray-200 ;
+    @apply relative aspect-square overflow-hidden bg-gray-200;
 }
 
 .image {
-  @apply w-full h-full object-cover rounded-md;
+    @apply w-full h-full object-cover rounded-md;
 }
 
+/* Badge "NUEVO" en esquina superior derecha */
 .newBadge {
-  @apply absolute top-4 right-4 bg-primary text-white text-xs font-bold px-2 py-1
-         rounded-full;
+    @apply absolute top-4 right-4 bg-primary text-white text-xs font-bold px-2 py-1
+    rounded-full;
 }
 
 .content {
-  @apply p-4 flex flex-col flex-grow;
+    @apply p-4 flex flex-col flex-grow;
 }
 
-.header{
+.header {
     @apply flex items-center justify-between;
 }
+
 .category {
-  @apply text-sm text-gray-500 dark:text-gray-400 mb-2;
+    @apply text-sm text-gray-500 dark:text-gray-400 mb-2;
 }
+
 .stock {
     @apply text-xs mr-1 text-gray-400;
 }
 
 .title {
-  @apply text-lg font-semibold text-gray-900  mb-2 mt-auto;
+    @apply text-lg font-semibold text-gray-900 mb-2 mt-auto;
 }
 
+/* Descripción truncada a 2 líneas */
 .description {
-  @apply text-sm text-gray-600 mb-4 line-clamp-2 mt-auto;
+    @apply text-sm text-gray-600 mb-4 line-clamp-2 mt-auto;
 }
 
 .footer {
-  @apply flex items-center justify-between mt-auto;
+    @apply flex items-center justify-between mt-auto;
 }
 
 .price {
-  @apply text-lg font-bold text-gray-900;
+    @apply text-lg font-bold text-gray-900;
 }
 
 .currency {
-  @apply text-sm mr-1;
+    @apply text-sm mr-1;
 }
 
 .amount {
-  @apply text-lg;
+    @apply text-lg;
 }
 
+/* Botón inicialmente invisible, se muestra al hacer hover en el card */
 .addToCart {
-  @apply bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary
-         transition-colors duration-200 text-sm font-medium opacity-0   ;
+    @apply bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary
+    transition-colors duration-200 text-sm font-medium opacity-0;
 }
